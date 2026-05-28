@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick a Spot</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0f1c3f;
+      min-height: 100vh;
+      padding: 40px 24px;
+      position: relative;
+    }
+
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(58,123,213,0.2) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 48px;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .venue-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .venue-card:hover {
+      border-color: rgba(91,156,246,0.5);
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-2px);
+    }
+
+    .venue-card.selected {
+      border-color: #5b9cf6;
+      background: rgba(58,123,213,0.15);
+    }
+
+    .venue-img {
+      width: 100%;
+      height: 160px;
+      background: rgba(58,123,213,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .venue-body {
+      padding: 20px;
+    }
+
+    .venue-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    a.venue-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    a.venue-name:hover {
+      color: #5b9cf6;
+      text-decoration: underline;
+    }
+
+    .venue-tag {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 50px;
+      background: rgba(58,123,213,0.3);
+      color: #7ab3f5;
+      border: 1px solid rgba(91,156,246,0.3);
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .venue-stars {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+    }
+
+    .star-filled { color: #f5c842; }
+
+    .venue-address {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 12px;
+    }
+
+    .venue-link {
+      font-size: 13px;
+      color: #5b9cf6;
+      text-decoration: none;
+    }
+
+    .venue-link:hover { text-decoration: underline; }
+
+    .select-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .select-btn:hover {
+      background: rgba(58,123,213,0.3);
+      border-color: #5b9cf6;
+    }
+
+    .venue-card.selected .select-btn {
+      background: #3a7bd5;
+      border-color: #3a7bd5;
+    }
+
+    .continue-wrap {
+      max-width: 520px;
+      margin: 24px auto 0;
+    }
+
+    .continue-btn {
+      width: 100%;
+      padding: 18px;
+      border-radius: 50px;
+      border: none;
+      background: #3a7bd5;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .continue-btn.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .continue-btn.active:hover {
+      background: #2d66bb;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="header">
+    <h1>Pick a spot, Sara.</h1>
+    <p>A few ideas — you choose.</p>
+  </div>
+
+  <div class="cards">
+
+    <div class="venue-card" id="card1" onclick="selectVenue(1)">
+      <div class="venue-img">🍸</div>
+      <div class="venue-body">
+        <div class="venue-top">
+          <a href="https://maps.google.com" target="_blank" class="venue-name" onclick="event.stopPropagation()">Amor Cubano</a>
+          <span class="venue-tag">Dinner</span>
+        </div>
+        <div class="venue-stars">
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span>4.8 · 1,240 reviews</span>
+        </div>
+        <div class="venue-address">📍 140 E 46th St, New York, NY</div>
+        <a class="venue-link" href="https://maps.google.com" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>
+        <button class="select-btn" id="btn1">Choose this spot</button>
+      </div>
+    </div>
+
+    <div class="venue-card" id="card2" onclick="selectVenue(2)">
+      <div class="venue-img">🌃</div>
+      <div class="venue-body">
+        <div class="venue-top">
+          <a href="https://maps.google.com" target="_blank" class="venue-name" onclick="event.stopPropagation()">230 Fifth Rooftop</a>
+          <span class="venue-tag">Rooftop</span>
+        </div>
+        <div class="venue-stars">
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span style="color:rgba(255,255,255,0.2)">★</span>
+          <span>4.3 · 890 reviews</span>
+        </div>
+        <div class="venue-address">📍 230 Fifth Ave, New York, NY</div>
+        <a class="venue-link" href="https://maps.google.com" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>
+        <button class="select-btn" id="btn2">Choose this spot</button>
+      </div>
+    </div>
+
+    <div class="venue-card" id="card3" onclick="selectVenue(3)">
+      <div class="venue-img">☕</div>
+      <div class="venue-body">
+        <div class="venue-top">
+          <a href="https://maps.google.com" target="_blank" class="venue-name" onclick="event.stopPropagation()">Blank Street Coffee</a>
+          <span class="venue-tag">Coffee</span>
+        </div>
+        <div class="venue-stars">
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span class="star-filled">★</span>
+          <span style="color:rgba(255,255,255,0.2)">★</span>
+          <span>4.4 · 560 reviews</span>
+        </div>
+        <div class="venue-address">📍 Multiple locations, New York, NY</div>
+        <a class="venue-link" href="https://maps.google.com" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>
+        <button class="select-btn" id="btn3">Choose this spot</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="continue-wrap">
+    <button class="continue-btn" id="continue-btn" onclick="window.location.href='timepicker.html'">
+      Next — pick a time
+    </button>
+  </div>
+
+  <script>
+    let selected = null;
+
+    function selectVenue(n) {
+      if (selected) {
+        document.getElementById('card' + selected).classList.remove('selected');
+        document.getElementById('btn' + selected).textContent = 'Choose this spot';
+      }
+      selected = n;
+      document.getElementById('card' + n).classList.add('selected');
+      document.getElementById('btn' + n).textContent = 'Selected ✓';
+      document.getElementById('continue-btn').classList.add('active');
+    }
+  </script>
+</body>
+</html>
