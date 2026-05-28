@@ -180,10 +180,14 @@
 
       if (!slug) {
         document.getElementById('content').innerHTML = `
-          <div class="tag">✦ Pick Our Date</div>
-          <h1>Hey, <span class="name">there.</span></h1>
-          <p class="subtitle">Pick our date.</p>
-          <p class="note">"No date page found — check your link."</p>
+          <div class="tag">✦ pickourdate.co</div>
+          <h1>Plan a <span class="name">date.</span></h1>
+          <p class="subtitle">Send her the choice.</p>
+          <p class="note">"Pick venues, set a time, and let her decide — all in one link."</p>
+          <button class="btn" onclick="window.location.href='creator.html'">
+            Create a date page
+          </button>
+          <p class="footer">pickourdate.co</p>
         `;
         return;
       }
