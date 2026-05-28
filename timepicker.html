@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pick a Time</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap');
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { width: 100%; overflow-x: hidden; }
+
     body {
       font-family: 'DM Sans', sans-serif;
       background: #0f1c3f;
       min-height: 100vh;
+      min-height: 100dvh;
       padding: 40px 24px;
       position: relative;
+      touch-action: pan-y;
     }
 
     .bg-glow {
@@ -163,7 +167,7 @@
 
     <div class="slot" id="slot1" onclick="selectSlot(1)">
       <div class="slot-left">
-        <span class="slot-day">Saturday</span>
+        <span class="slot-day">Sunday</span>
         <span class="slot-date">June 7</span>
         <span class="slot-time">7:00 PM</span>
       </div>
@@ -172,7 +176,7 @@
 
     <div class="slot" id="slot2" onclick="selectSlot(2)">
       <div class="slot-left">
-        <span class="slot-day">Saturday</span>
+        <span class="slot-day">Sunday</span>
         <span class="slot-date">June 7</span>
         <span class="slot-time">9:00 PM</span>
       </div>
@@ -181,7 +185,7 @@
 
     <div class="slot" id="slot3" onclick="selectSlot(3)">
       <div class="slot-left">
-        <span class="slot-day">Sunday</span>
+        <span class="slot-day">Monday</span>
         <span class="slot-date">June 8</span>
         <span class="slot-time">6:00 PM</span>
       </div>
@@ -206,6 +210,13 @@
       selected = n;
       document.getElementById('slot' + n).classList.add('selected');
       document.getElementById('continue-btn').classList.add('active');
+
+      const slots = {
+        1: { day: 'Sunday', date: 'June 7', time: '7:00 PM' },
+        2: { day: 'Sunday', date: 'June 7', time: '9:00 PM' },
+        3: { day: 'Monday', date: 'June 8', time: '6:00 PM' }
+      };
+      localStorage.setItem('slot', JSON.stringify(slots[n]));
     }
   </script>
 </body>

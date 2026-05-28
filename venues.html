@@ -296,6 +296,13 @@
       document.getElementById('card' + n).classList.add('selected');
       document.getElementById('btn' + n).textContent = 'Selected ✓';
       document.getElementById('continue-btn').classList.add('active');
+
+      const venues = {
+        1: { name: 'Amor Cubano', tag: 'Dinner', address: '140 E 46th St, New York, NY', maps: 'https://maps.google.com' },
+        2: { name: '230 Fifth Rooftop', tag: 'Rooftop', address: '230 Fifth Ave, New York, NY', maps: 'https://maps.google.com' },
+        3: { name: 'Blank Street Coffee', tag: 'Coffee', address: 'Multiple locations, New York, NY', maps: 'https://maps.google.com' }
+      };
+      localStorage.setItem('venue', JSON.stringify(venues[n]));
     }
   </script>
 </body>

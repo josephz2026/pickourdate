@@ -254,6 +254,22 @@
         alert("Link copied to clipboard!");
       }
     }
-  </script>
+  const venue = JSON.parse(localStorage.getItem('venue') || '{}');
+    const slot = JSON.parse(localStorage.getItem('slot') || '{}');
+
+    if (venue.name) {
+      document.querySelector('.summary-row:nth-child(1) .summary-value').innerHTML =
+        `${venue.name} <span class="summary-tag">${venue.tag}</span>`;
+    }
+    if (slot.date) {
+      document.querySelector('.summary-row:nth-child(2) .summary-value').textContent =
+        `${slot.day}, ${slot.date}`;
+      document.querySelector('.summary-row:nth-child(3) .summary-value').textContent =
+        slot.time;
+    }
+
+    if (venue.maps) {
+      document.querySelector('.btn-primary').href = venue.maps;
+    }</script>
 </body>
 </html>
