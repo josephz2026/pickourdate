@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Create a Date Page</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { width: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0f1c3f;
+      min-height: 100vh;
+      padding: 40px 24px 60px;
+      position: relative;
+      touch-action: pan-y;
+    }
+
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(58,123,213,0.2) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 48px;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .form {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #7ab3f5;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="time"],
+    textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: white;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 14px;
+    }
+
+    input:focus, textarea:focus { border-color: #5b9cf6; }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.25); }
+    textarea { resize: none; height: 80px; }
+
+    .venue-block {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .venue-block.filled { border-color: rgba(91,156,246,0.4); }
+
+    .venue-number {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 10px;
+    }
+
+    .venue-filled { display: none; }
+    .venue-block.filled .venue-filled { display: block; }
+    .venue-block.filled .venue-input-area { display: none; }
+
+    .venue-name-display {
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .venue-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
+    }
+
+    .venue-tag-select {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .tag-pill {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .tag-pill.active {
+      background: rgba(58,123,213,0.3);
+      color: #7ab3f5;
+      border-color: #5b9cf6;
+    }
+
+    .remove-venue {
+      font-size: 12px;
+      color: rgba(255,100,100,0.6);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      padding: 0;
+    }
+
+    .remove-venue:hover { color: rgba(255,100,100,1); }
+
+    .fetch-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 50px;
+      border: 1px solid rgba(91,156,246,0.4);
+      background: rgba(58,123,213,0.15);
+      color: #7ab3f5;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .fetch-btn:hover { background: rgba(58,123,213,0.3); }
+    .fetch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .add-venue-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 50px;
+      border: 1px dashed rgba(255,255,255,0.2);
+      background: transparent;
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-venue-btn:hover {
+      border-color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .slot-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .slot-row input { margin-bottom: 0; flex: 1; }
+
+    .remove-slot {
+      background: none;
+      border: none;
+      color: rgba(255,100,100,0.6);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .remove-slot:hover { color: rgba(255,100,100,1); }
+
+    .add-slot-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 50px;
+      border: 1px dashed rgba(255,255,255,0.2);
+      background: transparent;
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-slot-btn:hover {
+      border-color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .toggle-row:last-child { border-bottom: none; }
+
+    .toggle-info { flex: 1; }
+
+    .toggle-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: white;
+      margin-bottom: 2px;
+    }
+
+    .toggle-desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .toggle-track {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+
+    .toggle-track.on { background: #3a7bd5; }
+
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle-track.on .toggle-thumb { transform: translateX(16px); }
+
+    .generate-btn {
+      width: 100%;
+      padding: 20px;
+      border-radius: 50px;
+      border: none;
+      background: #3a7bd5;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .generate-btn:hover {
+      background: #2d66bb;
+      transform: translateY(-2px);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .link-box {
+      display: none;
+      background: rgba(58,213,130,0.1);
+      border: 1px solid rgba(91,232,160,0.3);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .link-box.show { display: block; }
+
+    .link-label {
+      font-size: 12px;
+      color: #5be8a0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .link-url {
+      font-size: 14px;
+      color: white;
+      word-break: break-all;
+      margin-bottom: 16px;
+      background: rgba(255,255,255,0.05);
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+
+    .copy-btn {
+      padding: 12px 32px;
+      border-radius: 50px;
+      border: none;
+      background: #3a7bd5;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover { background: #2d66bb; }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="header">
+    <h1>Create a date.</h1>
+    <p>Fill this in and send her the link.</p>
+  </div>
+
+  <div class="form">
+
+    <div class="section">
+      <div class="section-title">✦ Her details</div>
+      <label>Her first name</label>
+      <input type="text" id="guest-name" placeholder="Sara" />
+      <label>Personal note <span style="color:rgba(255,255,255,0.25);font-weight:400">(optional)</span></label>
+      <textarea id="personal-note" placeholder="Thought you should have a say in this one."></textarea>
+    </div>
+
+    <div class="section">
+      <div class="section-title">✦ Venues</div>
+      <div id="venues-container"></div>
+      <button class="add-venue-btn" onclick="addVenue()" id="add-venue-btn">+ Add a venue</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">✦ Time slots</div>
+      <div id="slots-container"></div>
+      <button class="add-slot-btn" onclick="addSlot()">+ Add a time slot</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">✦ Settings</div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">Allow "suggest a different place"</div>
+          <div class="toggle-desc">She can propose her own idea</div>
+        </div>
+        <div class="toggle-track" id="escape-toggle" onclick="toggle('escape-toggle')">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">Notify me when she responds</div>
+          <div class="toggle-desc">Get an email when she confirms</div>
+        </div>
+        <div class="toggle-track on" id="notify-toggle" onclick="toggle('notify-toggle')">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+
+      <div id="email-row" style="margin-top:14px">
+        <label>Your email</label>
+        <input type="email" id="notify-email" placeholder="you@gmail.com" />
+      </div>
+    </div>
+
+    <button class="generate-btn" id="generate-btn" onclick="generateLink()">
+      Generate link →
+    </button>
+
+    <div class="link-box" id="link-box">
+      <div class="link-label">✓ Your date link is ready</div>
+      <div class="link-url" id="link-url"></div>
+      <button class="copy-btn" onclick="copyLink()">Copy link</button>
+    </div>
+
+  </div>
+
+  <script src="supabase.js"></script>
+  <script>
+    const GOOGLE_API_KEY = 'AIzaSyD_DaAeYKppA38WZx7y4jWBSD8VLUXIpBk';
+    const categories = ['Drinks', 'Dinner', 'Rooftop', 'Coffee', 'Park', 'Concert', 'Activity'];
+    let venues = [];
+    let slots = [];
+    let generatedLink = '';
+
+    function toggle(id) {
+      const track = document.getElementById(id);
+      track.classList.toggle('on');
+      if (id === 'notify-toggle') {
+        document.getElementById('email-row').style.display =
+          track.classList.contains('on') ? 'block' : 'none';
+      }
+    }
+
+    function addVenue() {
+      const index = venues.length;
+      if (index >= 4) return;
+      venues.push({ name: '', tag: 'Dinner', address: '', maps: '', rating: 0, reviews: '0' });
+
+      const container = document.getElementById('venues-container');
+      const block = document.createElement('div');
+      block.className = 'venue-block';
+      block.id = `venue-block-${index}`;
+      block.innerHTML = `
+        <div class="venue-number">Venue ${index + 1}</div>
+        <div class="venue-input-area">
+          <input type="text" placeholder="Paste Google Maps link or venue name"
+            id="venue-input-${index}" style="margin-bottom:10px" />
+          <button class="fetch-btn" onclick="fillVenue(${index})">Auto-fill from Maps ✦</button>
+        </div>
+        <div class="venue-filled" id="venue-filled-${index}">
+          <div class="venue-name-display" id="venue-name-${index}"></div>
+          <div class="venue-meta" id="venue-meta-${index}"></div>
+          <div class="venue-tag-select" id="venue-tags-${index}"></div>
+          <button class="remove-venue" onclick="removeVenue(${index})">Remove</button>
+        </div>
+      `;
+      container.appendChild(block);
+
+      if (venues.length >= 4) {
+        document.getElementById('add-venue-btn').style.display = 'none';
+      }
+    }
+
+    async function fillVenue(index) {
+      const input = document.getElementById(`venue-input-${index}`).value.trim();
+      if (!input) { alert('Please enter a venue name or Google Maps link.'); return; }
+
+      const btn = document.querySelector(`#venue-block-${index} .fetch-btn`);
+      btn.textContent = 'Looking up...';
+      btn.disabled = true;
+
+      try {
+        let placeName = input;
+
+        if (input.startsWith('http')) {
+          const match = input.match(/place\/([^/@]+)/);
+          if (match) {
+            placeName = decodeURIComponent(match[1].replace(/\+/g, ' '));
+          }
+        }
+
+        const searchUrl = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(placeName)}&inputtype=textquery&fields=name,rating,user_ratings_total,formatted_address,place_id&key=${GOOGLE_API_KEY}`;
+        const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(searchUrl)}`);
+        const data = await response.json();
+
+        if (data.candidates && data.candidates.length > 0) {
+          const place = data.candidates[0];
+          venues[index] = {
+            name: place.name,
+            tag: 'Dinner',
+            address: place.formatted_address || 'New York, NY',
+            maps: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`,
+            rating: place.rating || 4.5,
+            reviews: place.user_ratings_total
+              ? place.user_ratings_total.toLocaleString()
+              : '500+'
+          };
+        } else {
+          venues[index] = {
+            name: placeName,
+            tag: 'Dinner',
+            address: 'New York, NY',
+            maps: input.startsWith('http')
+              ? input
+              : `https://maps.google.com/?q=${encodeURIComponent(placeName)}`,
+            rating: 4.5,
+            reviews: '500+'
+          };
+        }
+
+        showVenueFilled(index);
+
+      } catch (err) {
+        console.error(err);
+        venues[index] = {
+          name: input.startsWith('http') ? 'Venue ' + (index + 1) : input,
+          tag: 'Dinner',
+          address: 'New York, NY',
+          maps: input.startsWith('http')
+            ? input
+            : `https://maps.google.com/?q=${encodeURIComponent(input)}`,
+          rating: 4.5,
+          reviews: '500+'
+        };
+        showVenueFilled(index);
+      } finally {
+        btn.textContent = 'Auto-fill from Maps ✦';
+        btn.disabled = false;
+      }
+    }
+
+    function showVenueFilled(index) {
+      const v = venues[index];
+      const block = document.getElementById(`venue-block-${index}`);
+      block.classList.add('filled');
+
+      document.getElementById(`venue-name-${index}`).textContent = v.name;
+      document.getElementById(`venue-meta-${index}`).textContent =
+        `${v.address} · ${v.rating} ★`;
+
+      const tagsContainer = document.getElementById(`venue-tags-${index}`);
+      tagsContainer.innerHTML = categories.map(cat => `
+        <button class="tag-pill ${cat === v.tag ? 'active' : ''}"
+          onclick="setTag(${index}, '${cat}', this)">${cat}</button>
+      `).join('');
+    }
+
+    function setTag(index, tag, el) {
+      venues[index].tag = tag;
+      const container = document.getElementById(`venue-tags-${index}`);
+      container.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function removeVenue(index) {
+      venues[index] = null;
+      document.getElementById(`venue-block-${index}`).remove();
+      document.getElementById('add-venue-btn').style.display = 'block';
+    }
+
+    function addSlot() {
+      const index = slots.length;
+      slots.push({ date: '', time: '' });
+
+      const container = document.getElementById('slots-container');
+      const row = document.createElement('div');
+      row.className = 'slot-row';
+      row.id = `slot-row-${index}`;
+      row.innerHTML = `
+        <input type="date" id="slot-date-${index}" onchange="updateSlot(${index})" />
+        <input type="time" id="slot-time-${index}" onchange="updateSlot(${index})" />
+        <button class="remove-slot" onclick="removeSlot(${index})">×</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function updateSlot(index) {
+      const date = document.getElementById(`slot-date-${index}`).value;
+      const time = document.getElementById(`slot-time-${index}`).value;
+      if (date && time) {
+        const d = new Date(date + 'T' + time);
+        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        slots[index] = {
+          day: days[d.getDay()],
+          date: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }),
+          time: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+        };
+      }
+    }
+
+    function removeSlot(index) {
+      slots[index] = null;
+      document.getElementById(`slot-row-${index}`).remove();
+    }
+
+    function generateSlug(name) {
+      const random = Math.random().toString(36).substring(2, 7);
+      return `${name.toLowerCase().replace(/\s+/g, '')}-${random}`;
+    }
+
+    async function generateLink() {
+      const guestName = document.getElementById('guest-name').value.trim();
+      if (!guestName) { alert('Please enter her name.'); return; }
+
+      const filledVenues = venues.filter(v => v && v.name);
+      if (filledVenues.length === 0) { alert('Please add at least one venue.'); return; }
+
+      const filledSlots = slots.filter(s => s && s.date);
+      if (filledSlots.length === 0) { alert('Please add at least one time slot.'); return; }
+
+      const btn = document.getElementById('generate-btn');
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+
+      try {
+        const slug = generateSlug(guestName);
+        const notifyEmail = document.getElementById('notify-email').value.trim();
+        const allowEscape = document.getElementById('escape-toggle').classList.contains('on');
+
+        await createDatePage({
+          slug,
+          guest_name: guestName,
+          personal_note: document.getElementById('personal-note').value.trim(),
+          venues: filledVenues,
+          time_slots: filledSlots,
+          date_mode: 'slots',
+          allow_escape: allowEscape,
+          notify_email: notifyEmail || null,
+          status: 'pending'
+        });
+
+        const baseUrl = window.location.origin;
+        generatedLink = `${baseUrl}?id=${slug}`;
+
+        document.getElementById('link-url').textContent = generatedLink;
+        document.getElementById('link-box').classList.add('show');
+        btn.textContent = '✓ Link created';
+
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+      } catch (err) {
+        console.error(err);
+        alert('Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Generate link →';
+      }
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(generatedLink);
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy link', 2000);
+    }
+
+    addVenue();
+    addSlot();
+  </script>
+</body>
+</html>
