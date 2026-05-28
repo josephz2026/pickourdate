@@ -163,35 +163,7 @@
     <p>Pick a time that suits you best.</p>
   </div>
 
-  <div class="slots">
-
-    <div class="slot" id="slot1" onclick="selectSlot(1)">
-      <div class="slot-left">
-        <span class="slot-day">Sunday</span>
-        <span class="slot-date">June 7</span>
-        <span class="slot-time">7:00 PM</span>
-      </div>
-      <div class="slot-check" id="check1">✓</div>
-    </div>
-
-    <div class="slot" id="slot2" onclick="selectSlot(2)">
-      <div class="slot-left">
-        <span class="slot-day">Sunday</span>
-        <span class="slot-date">June 7</span>
-        <span class="slot-time">9:00 PM</span>
-      </div>
-      <div class="slot-check" id="check2">✓</div>
-    </div>
-
-    <div class="slot" id="slot3" onclick="selectSlot(3)">
-      <div class="slot-left">
-        <span class="slot-day">Monday</span>
-        <span class="slot-date">June 8</span>
-        <span class="slot-time">6:00 PM</span>
-      </div>
-      <div class="slot-check" id="check3">✓</div>
-    </div>
-
+  <div class="slots" id="slots">
   </div>
 
   <div class="continue-wrap">
@@ -200,8 +172,63 @@
     </button>
   </div>
 
+  <script src="supabase.js"></script>
   <script>
     let selected = null;
+    let slots = [];
+
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+    function formatSlot(slotStr) {
+      const [datePart, timePart] = slotStr.split('|');
+      const date = new Date(datePart);
+      return {
+        day: days[date.getDay()],
+        date: date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }),
+        time: timePart || '7:00 PM',
+        raw: slotStr
+      };
+    }
+
+    function renderSlots(slotList) {
+      const container = document.getElementById('slots');
+      container.innerHTML = '';
+      slotList.forEach((slot, index) => {
+        const n = index + 1;
+        const formatted = typeof slot === 'string' ? formatSlot(slot) : slot;
+        container.innerHTML += `
+          <div class="slot" id="slot${n}" onclick="selectSlot(${n})">
+            <div class="slot-left">
+              <span class="slot-day">${formatted.day}</span>
+              <span class="slot-date">${formatted.date}</span>
+              <span class="slot-time">${formatted.time}</span>
+            </div>
+            <div class="slot-check" id="check${n}">✓</div>
+          </div>
+        `;
+      });
+      slots = slotList.map(s => typeof s === 'string' ? formatSlot(s) : s);
+    }
+
+    async function loadPage() {
+      const slug = localStorage.getItem('slug');
+      if (!slug) {
+        renderSlots([
+          { day: 'Sunday', date: 'June 7', time: '7:00 PM' },
+          { day: 'Sunday', date: 'June 7', time: '9:00 PM' },
+          { day: 'Monday', date: 'June 8', time: '6:00 PM' }
+        ]);
+        return;
+      }
+
+      try {
+        const page = await getDatePage(slug);
+        if (!page) return;
+        renderSlots(page.time_slots);
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
     function selectSlot(n) {
       if (selected) {
@@ -210,14 +237,10 @@
       selected = n;
       document.getElementById('slot' + n).classList.add('selected');
       document.getElementById('continue-btn').classList.add('active');
-
-      const slots = {
-        1: { day: 'Sunday', date: 'June 7', time: '7:00 PM' },
-        2: { day: 'Sunday', date: 'June 7', time: '9:00 PM' },
-        3: { day: 'Monday', date: 'June 8', time: '6:00 PM' }
-      };
-      localStorage.setItem('slot', JSON.stringify(slots[n]));
+      localStorage.setItem('slot', JSON.stringify(slots[n - 1]));
     }
+
+    loadPage();
   </script>
 </body>
 </html>

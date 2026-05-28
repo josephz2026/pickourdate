@@ -9,11 +9,7 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow-x: hidden;
-    }
+    html, body { width: 100%; overflow-x: hidden; }
 
     body {
       font-family: 'DM Sans', sans-serif;
@@ -76,10 +72,7 @@
       margin-bottom: 16px;
     }
 
-    h1 .name {
-      color: #5b9cf6;
-      display: block;
-    }
+    h1 .name { color: #5b9cf6; display: block; }
 
     .subtitle {
       font-family: 'DM Sans', sans-serif;
@@ -109,7 +102,6 @@
       cursor: pointer;
       border: none;
       font-family: 'DM Sans', sans-serif;
-      letter-spacing: 0.02em;
       transition: all 0.2s;
       width: 100%;
     }
@@ -149,6 +141,20 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
+
+    .loading {
+      color: rgba(255,255,255,0.5);
+      font-size: 15px;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .error {
+      color: #f87171;
+      font-size: 15px;
+      text-align: center;
+      padding: 40px;
+    }
   </style>
 </head>
 <body>
@@ -163,14 +169,61 @@
       <div class="star" style="top:10%;left:60%;animation-delay:2s"></div>
       <div class="star" style="top:90%;left:45%;animation-delay:0.3s"></div>
     </div>
-    <div class="tag">✦ You have a date proposal</div>
-    <h1>Hey, <span class="name">Sara.</span></h1>
-    <p class="subtitle">Pick our date.</p>
-    <p class="note">"Thought you should have a say in this one."</p>
-    <button class="btn" onclick="window.location.href='venues.html'">
-      Let's see the options
-    </button>
-    <p class="footer">pickourdate.co</p>
+    <div id="content" class="loading">Loading...</div>
   </div>
+
+  <script src="supabase.js"></script>
+  <script>
+    async function loadPage() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('id');
+
+      if (!slug) {
+        document.getElementById('content').innerHTML = `
+          <div class="tag">✦ Pick Our Date</div>
+          <h1>Hey, <span class="name">there.</span></h1>
+          <p class="subtitle">Pick our date.</p>
+          <p class="note">"No date page found — check your link."</p>
+        `;
+        return;
+      }
+
+      try {
+        const page = await getDatePage(slug);
+
+        if (!page) {
+          document.getElementById('content').className = 'error';
+          document.getElementById('content').textContent = 'This link is invalid or has expired.';
+          return;
+        }
+
+        localStorage.setItem('slug', slug);
+        localStorage.setItem('dateMode', page.date_mode);
+
+        await updateDatePage(slug, { viewed_at: new Date().toISOString() });
+
+        const note = page.personal_note
+          ? `<p class="note">"${page.personal_note}"</p>`
+          : '';
+
+        document.getElementById('content').innerHTML = `
+          <div class="tag">✦ You have a date proposal</div>
+          <h1>Hey, <span class="name">${page.guest_name}.</span></h1>
+          <p class="subtitle">Pick our date.</p>
+          ${note}
+          <button class="btn" onclick="window.location.href='venues.html'">
+            Let's see the options
+          </button>
+          <p class="footer">pickourdate.co</p>
+        `;
+
+      } catch (err) {
+        document.getElementById('content').className = 'error';
+        document.getElementById('content').textContent = 'Something went wrong. Please try again.';
+      }
+    }
+
+    loadPage();
+  </script>
 </body>
 </html>

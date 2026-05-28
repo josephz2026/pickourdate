@@ -2,22 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>It's a Date!</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap');
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { width: 100%; overflow-x: hidden; }
+
     body {
       font-family: 'DM Sans', sans-serif;
       background: #0f1c3f;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 40px 24px;
       position: relative;
+      touch-action: pan-y;
     }
 
     .bg-glow {
@@ -41,6 +45,13 @@
       width: 100%;
       text-align: center;
       position: relative;
+      animation: pop 0.4s ease forwards;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      70% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .confirmed-badge {
@@ -174,14 +185,6 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
-
-    @keyframes pop {
-      0% { transform: scale(0.8); opacity: 0; }
-      70% { transform: scale(1.05); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .card { animation: pop 0.4s ease forwards; }
   </style>
 </head>
 <body>
@@ -192,7 +195,7 @@
 
     <div class="header">
       <h1>It's a date!</h1>
-      <p>Can't wait, Sara. See you then.</p>
+      <p id="subtitle">Can't wait. See you then.</p>
     </div>
 
     <div class="summary">
@@ -200,27 +203,27 @@
         <div class="summary-icon">📍</div>
         <div>
           <div class="summary-label">Spot</div>
-          <div class="summary-value">Amor Cubano <span class="summary-tag">Dinner</span></div>
+          <div class="summary-value" id="summary-venue">—</div>
         </div>
       </div>
       <div class="summary-row">
         <div class="summary-icon">📅</div>
         <div>
           <div class="summary-label">Date</div>
-          <div class="summary-value">Saturday, June 7</div>
+          <div class="summary-value" id="summary-date">—</div>
         </div>
       </div>
       <div class="summary-row">
         <div class="summary-icon">🕖</div>
         <div>
           <div class="summary-label">Time</div>
-          <div class="summary-value">7:00 PM</div>
+          <div class="summary-value" id="summary-time">—</div>
         </div>
       </div>
     </div>
 
     <div class="actions">
-      <a class="action-btn btn-primary" href="https://maps.google.com" target="_blank">
+      <a class="action-btn btn-primary" id="maps-btn" href="https://maps.google.com" target="_blank">
         🗺️ Open in Google Maps
       </a>
       <button class="action-btn btn-secondary" onclick="addToCalendar()">
@@ -234,42 +237,70 @@
     <p class="footer">pickourdate.co</p>
   </div>
 
+  <script src="supabase.js"></script>
   <script>
+    const venue = JSON.parse(localStorage.getItem('venue') || '{}');
+    const slot = JSON.parse(localStorage.getItem('slot') || '{}');
+    const slug = localStorage.getItem('slug');
+
+    async function loadPage() {
+      let v = venue;
+      let s = slot;
+
+      if (slug && (!v.name || !s.date)) {
+        try {
+          const page = await getDatePage(slug);
+          if (page) {
+            v = page.selected_venue || v;
+            s = page.selected_slot || s;
+            if (page.guest_name) {
+              document.getElementById('subtitle').textContent =
+                `Can't wait, ${page.guest_name}. See you then.`;
+            }
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      if (v.name) {
+        document.getElementById('summary-venue').innerHTML =
+          `${v.name} <span class="summary-tag">${v.tag}</span>`;
+        document.getElementById('maps-btn').href = v.maps || 'https://maps.google.com';
+      }
+
+      if (s.date) {
+        document.getElementById('summary-date').textContent = `${s.day}, ${s.date}`;
+        document.getElementById('summary-time').textContent = s.time;
+      }
+    }
+
     function addToCalendar() {
-      const text = encodeURIComponent("Date at Amor Cubano");
-      const dates = "20250607T190000/20250607T220000";
-      const location = encodeURIComponent("140 E 46th St, New York, NY");
-      window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&location=${location}`, '_blank');
+      const venueName = venue.name || 'Our Date';
+      const address = venue.address || '';
+      const text = encodeURIComponent(`Date at ${venueName}`);
+      const location = encodeURIComponent(address);
+      window.open(
+        `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&location=${location}`,
+        '_blank'
+      );
     }
 
     function shareWithFriend() {
+      const text = `${venue.name || 'Our date'} — ${slot.day || ''} ${slot.date || ''} at ${slot.time || ''}`;
       if (navigator.share) {
         navigator.share({
           title: "It's a date!",
-          text: "Amor Cubano — Saturday June 7 at 7pm",
+          text: text,
           url: window.location.href
         });
       } else {
         navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
+        alert('Link copied to clipboard!');
       }
     }
-  const venue = JSON.parse(localStorage.getItem('venue') || '{}');
-    const slot = JSON.parse(localStorage.getItem('slot') || '{}');
 
-    if (venue.name) {
-      document.querySelector('.summary-row:nth-child(1) .summary-value').innerHTML =
-        `${venue.name} <span class="summary-tag">${venue.tag}</span>`;
-    }
-    if (slot.date) {
-      document.querySelector('.summary-row:nth-child(2) .summary-value').textContent =
-        `${slot.day}, ${slot.date}`;
-      document.querySelector('.summary-row:nth-child(3) .summary-value').textContent =
-        slot.time;
-    }
-
-    if (venue.maps) {
-      document.querySelector('.btn-primary').href = venue.maps;
-    }</script>
+    loadPage();
+  </script>
 </body>
 </html>

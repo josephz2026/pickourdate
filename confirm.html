@@ -2,22 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Confirm Your Date</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap');
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { width: 100%; overflow-x: hidden; }
+
     body {
       font-family: 'DM Sans', sans-serif;
       background: #0f1c3f;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 40px 24px;
       position: relative;
+      touch-action: pan-y;
     }
 
     .bg-glow {
@@ -124,10 +128,8 @@
       margin-bottom: 12px;
     }
 
-    .confirm-btn:hover {
-      background: #2d66bb;
-      transform: translateY(-2px);
-    }
+    .confirm-btn:hover { background: #2d66bb; transform: translateY(-2px); }
+    .confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .back-btn {
       width: 100%;
@@ -143,10 +145,7 @@
       transition: all 0.2s;
     }
 
-    .back-btn:hover {
-      border-color: rgba(255,255,255,0.3);
-      color: white;
-    }
+    .back-btn:hover { border-color: rgba(255,255,255,0.3); color: white; }
   </style>
 </head>
 <body>
@@ -163,45 +162,70 @@
         <div class="summary-icon">📍</div>
         <div>
           <div class="summary-label">Spot</div>
-          <div class="summary-value">Amor Cubano <span class="summary-tag">Dinner</span></div>
+          <div class="summary-value" id="summary-venue">—</div>
         </div>
       </div>
       <div class="summary-row">
         <div class="summary-icon">📅</div>
         <div>
           <div class="summary-label">Date</div>
-          <div class="summary-value">Saturday, June 7</div>
+          <div class="summary-value" id="summary-date">—</div>
         </div>
       </div>
       <div class="summary-row">
         <div class="summary-icon">🕖</div>
         <div>
           <div class="summary-label">Time</div>
-          <div class="summary-value">7:00 PM</div>
+          <div class="summary-value" id="summary-time">—</div>
         </div>
       </div>
     </div>
 
-    <button class="confirm-btn" onclick="window.location.href='datecard.html'">
+    <button class="confirm-btn" id="confirm-btn" onclick="confirmDate()">
       Lock it in ✓
     </button>
     <button class="back-btn" onclick="history.back()">
       Go back and change
     </button>
   </div>
+
+  <script src="supabase.js"></script>
   <script>
     const venue = JSON.parse(localStorage.getItem('venue') || '{}');
     const slot = JSON.parse(localStorage.getItem('slot') || '{}');
+    const slug = localStorage.getItem('slug');
 
     if (venue.name) {
-      document.querySelector('.summary-row:nth-child(1) .summary-value').innerHTML =
+      document.getElementById('summary-venue').innerHTML =
         `${venue.name} <span class="summary-tag">${venue.tag}</span>`;
     }
+
     if (slot.date) {
-      document.querySelector('.summary-row:nth-child(2) .summary-value').textContent =
-        `${slot.day}, ${slot.date}`;
-      document.querySelector('.summary-row:nth-child(3) .summary-value').textContent =
-        slot.time;
+      document.getElementById('summary-date').textContent = `${slot.day}, ${slot.date}`;
+      document.getElementById('summary-time').textContent = slot.time;
+    }
+
+    async function confirmDate() {
+      const btn = document.getElementById('confirm-btn');
+      btn.disabled = true;
+      btn.textContent = 'Confirming...';
+
+      try {
+        if (slug) {
+          await updateDatePage(slug, {
+            selected_venue: venue,
+            selected_slot: slot,
+            status: 'confirmed',
+            confirmed_at: new Date().toISOString()
+          });
+        }
+        window.location.href = 'datecard.html';
+      } catch (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = 'Lock it in ✓';
+        alert('Something went wrong. Please try again.');
+      }
     }
   </script>
 </body>
