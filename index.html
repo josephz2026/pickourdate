@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick Our Date</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #faf9f7;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid #efefef;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: normal;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    h1 span {
+      color: #c84b4b;
+    }
+
+    .note {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #1a1a1a;
+      color: white;
+      padding: 16px 40px;
+      border-radius: 50px;
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+    }
+
+    .btn:hover { background: #333; }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 11px;
+      color: #ccc;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p class="eyebrow">You have a date proposal</p>
+    <h1>Hey <span>Sara</span>,<br>pick our date.</h1>
+    <p class="note">"Thought you should have a say in this one."</p>
+    <button class="btn" onclick="alert('Next step coming soon!')">
+      Let's see the options →
+    </button>
+    <p class="footer">pickourdate.co</p>
+  </div>
+</body>
+</html>
