@@ -6,6 +6,7 @@ export default async function handler(req, res) {
   const { to, guestName, venueName, date, time, type, address } = req.body;
   if (!to) return res.status(400).json({ error: 'Missing email' });
 
+  const mapsLink = `https://maps.google.com/?q=${encodeURIComponent(venueName || '')}`;
   const calLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Date at ${venueName}`)}&details=${encodeURIComponent(`${venueName} — ${date} at ${time}`)}&location=${encodeURIComponent(venueName || '')}`;
 
   function toISODate(dateStr, timeStr) {
@@ -18,7 +19,44 @@ export default async function handler(req, res) {
     } catch { return new Date().toISOString(); }
   }
 
+  function toICSDate(dateStr, timeStr) {
+    try {
+      const now = new Date();
+      const year = now.getFullYear();
+      const d = new Date(`${dateStr} ${year} ${timeStr}`);
+      if (isNaN(d)) return null;
+      return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    } catch { return null; }
+  }
+
   const isoDate = toISODate(date, time);
+  const icsStart = toICSDate(date, time);
+  const icsEnd = icsStart ? (() => {
+    const d = new Date(`${date} ${new Date().getFullYear()} ${time}`);
+    d.setHours(d.getHours() + 2);
+    return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  })() : null;
+
+  const icsContent = icsStart ? [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//PickOurDate//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:REQUEST',
+    'BEGIN:VEVENT',
+    `DTSTART:${icsStart}`,
+    `DTEND:${icsEnd}`,
+    `SUMMARY:Date at ${venueName}`,
+    `DESCRIPTION:${venueName} — ${date} at ${time}`,
+    `LOCATION:${address || venueName}`,
+    `UID:${Date.now()}@pickourdate.co`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n') : null;
+
+  const icsBase64 = icsContent
+    ? Buffer.from(icsContent).toString('base64')
+    : null;
 
   const schemaMarkup = (type === 'confirmed' || type === 'guest_confirmed') ? `
     <script type="application/ld+json">
@@ -26,10 +64,7 @@ export default async function handler(req, res) {
       "@context": "http://schema.org",
       "@type": "EventReservation",
       "reservationNumber": "POD-${Date.now()}",
-      "underName": {
-        "@type": "Person",
-        "name": "${guestName}"
-      },
+      "underName": { "@type": "Person", "name": "${guestName}" },
       "reservationFor": {
         "@type": "Event",
         "name": "Date at ${venueName}",
@@ -71,11 +106,15 @@ export default async function handler(req, res) {
     <table width="100%" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;margin:28px 0;text-align:left;">
       <tr><td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);">
         <p style="margin:0 0 4px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-family:'Helvetica',sans-serif">Spot</p>
-        <p style="margin:0;font-size:17px;color:white;font-family:'Georgia',serif">${venueName}</p>
+        <p style="margin:0;font-size:17px;font-family:'Georgia',serif">
+          <a href="${mapsLink}" style="color:white;text-decoration:underline">${venueName}</a>
+        </p>
       </td></tr>
       <tr><td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);">
         <p style="margin:0 0 4px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-family:'Helvetica',sans-serif">Date</p>
-        <p style="margin:0;font-size:17px;color:white;font-family:'Georgia',serif">${date}</p>
+        <p style="margin:0;font-size:17px;font-family:'Georgia',serif">
+          <a href="${calLink}" style="color:white;text-decoration:underline">${date}</a>
+        </p>
       </td></tr>
       <tr><td style="padding:16px 20px;">
         <p style="margin:0 0 4px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-family:'Helvetica',sans-serif">Time</p>
@@ -104,7 +143,12 @@ export default async function handler(req, res) {
         ${summaryBlock}
         ${calButton}
         <p style="font-size:15px;color:rgba(255,255,255,0.4);margin:20px 0 0;font-family:'Helvetica',sans-serif">Now show up.</p>
-      `)
+      `),
+      attachments: icsBase64 ? [{
+        filename: 'date.ics',
+        content: icsBase64,
+        type: 'text/calendar'
+      }] : []
     },
     guest_confirmed: {
       subject: `You're going on a date ✦`,
@@ -115,7 +159,12 @@ export default async function handler(req, res) {
         ${summaryBlock}
         ${calButton}
         <p style="font-size:15px;color:rgba(255,255,255,0.4);margin:20px 0 0;font-family:'Helvetica',sans-serif">Can't wait to see you.</p>
-      `)
+      `),
+      attachments: icsBase64 ? [{
+        filename: 'date.ics',
+        content: icsBase64,
+        type: 'text/calendar'
+      }] : []
     }
   };
 
@@ -133,7 +182,8 @@ export default async function handler(req, res) {
         from: 'PickOurDate <noreply@pickourdate.co>',
         to: [to],
         subject: email.subject,
-        html: email.html
+        html: email.html,
+        attachments: email.attachments || []
       })
     });
 
