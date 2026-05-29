@@ -368,21 +368,26 @@
   <script>
     const SUPABASE_URL = 'https://jjzscluiudnpzrpfmfje.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqenNjbHVpdWRucHpycGZtZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTU5MDYsImV4cCI6MjA5NTU3MTkwNn0.Gibxci4jo9k5a9khF-kF4SxEPCq57umNr4FUvZBLzh0';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase
 
     async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        document.getElementById('loading-view').style.display = 'none';
 
-      document.getElementById('loading-view').style.display = 'none';
+        if (!session) {
+          document.getElementById('login-view').style.display = 'block';
+          return;
+        }
 
-      if (!session) {
+        document.getElementById('dashboard-view').style.display = 'block';
+        document.getElementById('user-name').textContent = session.user.email;
+        loadDates(session.user.id);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loading-view').style.display = 'none';
         document.getElementById('login-view').style.display = 'block';
-        return;
       }
-
-      document.getElementById('dashboard-view').style.display = 'block';
-      document.getElementById('user-name').textContent = session.user.email;
-      loadDates(session.user.id);
     }
 
     async function signInWithGoogle() {
