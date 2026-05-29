@@ -516,9 +516,13 @@
     );
 
     let currentUserId = null;
-    _supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) currentUserId = session.user.id;
-    });
+    try {
+      const stored = localStorage.getItem('sb-jjzscluiudnpzrpfmfje-auth-token');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.user) currentUserId = parsed.user.id;
+      }
+    } catch(e) {}
 
     const CATEGORIES = ['Drinks','Dinner','Rooftop','Coffee','Park','Concert','Activity'];
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
