@@ -259,8 +259,7 @@
   <script>
     async function init() {
       const params = new URLSearchParams(window.location.search);
-      const slug = params.get('id');
-
+const slug = window.location.pathname.replace('/', '') || params.get('id');
       if (!slug) {
         document.getElementById('landing').classList.remove('hidden');
         return;
@@ -302,7 +301,12 @@
           ? `<p class="date-note">"${page.personal_note}"</p>`
           : '<div style="margin-bottom:48px"></div>';
 
-        document.getElementById('date-inner').innerHTML = `
+        if (page.status === 'confirmed') {
+            window.location.href = 'datecard.html';
+            return;
+          }
+
+          document.getElementById('date-inner').innerHTML = `
           <p class="date-label">you have a date proposal</p>
           <h1 class="date-hero fade-up">
             Hey,
