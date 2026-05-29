@@ -283,7 +283,19 @@
         localStorage.setItem('slug', slug);
         localStorage.setItem('dateMode', page.date_mode);
 
-        await updateDatePage(slug, { viewed_at: new Date().toISOString() });
+       await updateDatePage(slug, { viewed_at: new Date().toISOString() });
+
+        if (page.notify_email) {
+          fetch('/api/notify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: page.notify_email,
+              guestName: page.guest_name,
+              type: 'viewed'
+            })
+          });
+        }
 
         const note = page.personal_note
           ? `<p class="date-note">"${page.personal_note}"</p>`

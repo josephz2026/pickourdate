@@ -285,13 +285,29 @@
       btn.textContent = 'Confirming...';
 
       try {
-        if (slug) {
+       if (slug) {
           await updateDatePage(slug, {
             selected_venue: venue,
             selected_slot: slot,
             status: 'confirmed',
             confirmed_at: new Date().toISOString()
           });
+
+          const page = await getDatePage(slug);
+          if (page && page.notify_email) {
+            fetch('/api/notify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                to: page.notify_email,
+                guestName: page.guest_name,
+                venueName: venue.name,
+                date: slot.date,
+                time: slot.time,
+                type: 'confirmed'
+              })
+            });
+          }
         }
         window.location.href = 'datecard.html';
       } catch (err) {
