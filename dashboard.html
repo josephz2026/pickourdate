@@ -1,423 +1,1033 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Dashboard — PickOurDate</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; overflow-x: hidden; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — pickourdate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg:       #faf8f5;
+    --bg2:      #f3efe8;
+    --surface:  #ffffff;
+    --border:   #e8e2d9;
+    --border2:  #d4cdc3;
+    --text:     #1a1714;
+    --muted:    #9a9088;
+    --accent:   #c8412e;
+    --accent-l: #f5e8e6;
+    --green:    #2d7a4f;
+    --green-l:  #e6f4ed;
+    --yellow:   #b87c1a;
+    --yellow-l: #fdf3e0;
+    --sans:     'DM Sans', sans-serif;
+    --serif:    'Fraunces', serif;
+    --mono:     'DM Mono', monospace;
+  }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: #E8E0D5;
-      min-height: 100vh;
-      padding: 40px 20px 60px;
-    }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .header {
-      max-width: 600px;
-      margin: 0 auto 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+  }
 
-    .header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      font-weight: 400;
-      color: #12121C;
-    }
+  /* ── login ───────────────────────────────────── */
+  #login-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 32px;
+    padding: 20px;
+  }
 
-    .header h1 em { font-style: italic; color: rgba(18,18,28,0.4); }
+  .login-hero {
+    text-align: center;
+  }
 
-    .user-info { display: flex; align-items: center; gap: 10px; }
-    .user-name { font-size: 13px; color: rgba(18,18,28,0.5); }
+  .login-hero h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1.1;
+  }
 
-    .sign-out-btn {
-      font-size: 12px;
-      color: rgba(18,18,28,0.4);
-      background: none;
-      border: 1px solid rgba(18,18,28,0.2);
-      border-radius: 50px;
-      padding: 6px 14px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.2s;
-    }
+  .login-hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
 
-    .sign-out-btn:hover { border-color: rgba(18,18,28,0.4); color: #12121C; }
+  .login-hero p {
+    color: var(--muted);
+    margin-top: 10px;
+    font-size: 15px;
+  }
 
-    .new-date-btn {
-      display: block;
-      max-width: 600px;
-      margin: 0 auto 24px;
-      padding: 18px;
-      border-radius: 50px;
-      border: none;
-      background: #12121C;
-      color: white;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      text-decoration: none;
-    }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
 
-    .new-date-btn:hover { background: #1e1e2e; transform: translateY(-2px); }
+  .login-card h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  .login-card p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
 
-    .pages-list {
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+  .btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background: #fff;
+    color: #333;
+    border: 1px solid var(--border2);
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: var(--sans);
+    cursor: pointer;
+    font-weight: 400;
+    transition: all 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .btn-google:hover { border-color: var(--border2); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-    .date-card {
-      background: #12121C;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
 
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: white;
-      border-radius: 50%;
-      opacity: 0;
-      animation: twinkle 3s infinite;
-    }
+  .btn-anon {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-anon:hover { border-color: var(--border2); color: var(--text); }
 
-    @keyframes twinkle {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 0.4; }
-    }
+  /* ── app ──────────────────────────────────────── */
+  #app { display: none; }
 
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-    }
+  /* ── topbar ──────────────────────────────────── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
 
-    .guest-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: white;
-    }
+  .topbar-logo {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .topbar-logo em { font-style: italic; color: var(--accent); }
 
-    .status-badge {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 50px;
-      border: 1px solid;
-    }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 
-    .status-badge.pending { color: rgba(255,200,80,0.8); border-color: rgba(255,200,80,0.2); background: rgba(255,200,80,0.05); }
-    .status-badge.confirmed { color: rgba(100,220,150,0.9); border-color: rgba(100,220,150,0.2); background: rgba(100,220,150,0.05); }
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px 5px 6px;
+    font-size: 13px;
+  }
 
-    .card-details {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-    }
+  .user-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent-l);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: var(--accent);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    .detail-row {
-      font-size: 13px;
-      color: rgba(255,255,255,0.45);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+  .btn-sm {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-sm:hover { border-color: var(--border2); color: var(--text); }
 
-    .detail-row strong { color: rgba(255,255,255,0.7); font-weight: 500; }
+  .btn-create {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: var(--sans);
+    cursor: pointer;
+    font-weight: 400;
+    transition: opacity 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-create:hover { opacity: 0.8; }
 
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      position: relative;
-      z-index: 1;
-    }
+  /* ── page body ────────────────────────────────── */
+  .page-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px;
+  }
 
-    .card-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: transparent;
-      color: rgba(255,255,255,0.6);
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
 
-    .card-btn:hover { border-color: rgba(255,255,255,0.35); color: white; }
-    .card-btn.copied { border-color: rgba(100,220,150,0.4); color: rgba(100,220,150,0.8); }
+  .page-header h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
 
-    .empty-state { text-align: center; padding: 60px 20px; }
+  .page-header h2 span {
+    font-size: 16px;
+    font-family: var(--sans);
+    color: var(--muted);
+    font-weight: 300;
+    display: block;
+    margin-top: 4px;
+  }
 
-    .empty-state h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
-      font-weight: 400;
-      color: #12121C;
-      margin-bottom: 8px;
-    }
+  /* ── stats ────────────────────────────────────── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
 
-    .empty-state p { font-size: 15px; color: rgba(18,18,28,0.4); margin-bottom: 32px; }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
 
-    .loading { text-align: center; padding: 60px 20px; color: rgba(18,18,28,0.4); font-size: 15px; }
+  .stat-card .val {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--text);
+  }
+  .stat-card .val.green  { color: var(--green); }
+  .stat-card .val.yellow { color: var(--yellow); }
+  .stat-card .val.red    { color: var(--accent); }
 
-    .login-card {
-      background: #12121C;
-      border-radius: 28px;
-      padding: 52px 36px;
-      max-width: 440px;
-      margin: 80px auto 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
+  .stat-card .label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
 
-    .login-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 36px;
-      font-weight: 400;
-      color: white;
-      margin-bottom: 12px;
-    }
+  /* ── cards grid ───────────────────────────────── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
 
-    .login-title em { font-style: italic; color: rgba(255,255,255,0.4); }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+    max-width: 300px;
+  }
 
-    .login-sub {
-      font-size: 15px;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 40px;
-      font-weight: 300;
-      line-height: 1.6;
-    }
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 12px 9px 34px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--border2); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute;
+    left: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 15px;
+    pointer-events: none;
+  }
 
-    .google-btn {
-      width: 100%;
-      padding: 16px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: transparent;
-      color: white;
-      font-size: 14px;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
+  .filter-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: var(--sans);
+    cursor: pointer;
+    outline: none;
+  }
 
-    .google-btn:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
 
-    .skip-btn {
-      margin-top: 16px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.25);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 8px;
-    }
+  /* ── date card ────────────────────────────────── */
+  .date-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .date-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); border-color: var(--border2); }
+  .date-card.deleted { opacity: 0.5; }
 
-    .skip-btn:hover { color: rgba(255,255,255,0.5); }
-  </style>
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .card-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.1;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+  .status-pill::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .pill-pending   { background: var(--yellow-l); color: var(--yellow); }
+  .pill-confirmed { background: var(--green-l);  color: var(--green); }
+  .pill-expired   { background: var(--bg2);      color: var(--muted); }
+  .pill-deleted   { background: var(--accent-l); color: var(--accent); }
+
+  .card-note {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    border-left: 2px solid var(--border);
+    padding-left: 10px;
+    font-style: italic;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 9px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .confirmed-venue {
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green-l);
+    border: 1px solid #c8e6d5;
+    border-radius: 8px;
+    padding: 9px 12px;
+  }
+
+  .confirmed-venue .icon { font-size: 16px; }
+
+  .card-notes-box {
+    background: var(--bg2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .card-notes-box strong {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .action-btn:hover { border-color: var(--border2); color: var(--text); }
+  .action-btn.danger:hover { border-color: #f5c4be; color: var(--accent); background: var(--accent-l); }
+  .action-btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .action-btn.primary:hover { opacity: 0.8; color: var(--bg); }
+
+  /* ── empty state ──────────────────────────────── */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state .icon { font-size: 40px; margin-bottom: 16px; }
+  .empty-state h3 { font-family: var(--serif); font-weight: 300; font-size: 24px; margin-bottom: 8px; color: var(--text); }
+  .empty-state p { font-size: 14px; margin-bottom: 24px; }
+
+  /* ── loading ──────────────────────────────────── */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 40px auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── modal ────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,23,20,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+  }
+
+  .modal h3 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .field input, .field textarea, .field select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--border2); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+  .btn-primary {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.8; }
+
+  /* ── toast ────────────────────────────────────── */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--text);
+    color: var(--bg);
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.2s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 600px) {
+    .page-body { padding: 24px 16px; }
+    .topbar { padding: 0 16px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .login-card { padding: 28px 24px; }
+  }
+</style>
 </head>
 <body>
 
-  <div id="loading-view">
-    <div class="loading" style="margin-top:80px">Loading...</div>
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-hero">
+    <h1>pick<em>our</em>date</h1>
+    <p>Your dates, all in one place</p>
   </div>
+  <div class="login-card">
+    <h2>Sign in</h2>
+    <p>See all the date pages you've created</p>
+    <button class="btn-google" onclick="signInGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+    <div class="divider">or</div>
+    <button class="btn-anon" onclick="continueAnon()">Browse without signing in</button>
+  </div>
+</div>
 
-  <div id="login-view" style="display:none">
-    <div class="login-card">
-      <div class="star" style="top:10%;left:8%;animation-delay:0s"></div>
-      <div class="star" style="top:20%;left:90%;animation-delay:0.7s"></div>
-      <div class="star" style="top:70%;left:5%;animation-delay:1.3s"></div>
-      <div class="star" style="top:85%;left:85%;animation-delay:0.4s"></div>
-      <h1 class="login-title">Your <em>dates.</em></h1>
-      <p class="login-sub">Sign in to see all your date pages, track responses, and create new ones.</p>
-      <button class="google-btn" onclick="signInWithGoogle()">
-        <svg width="18" height="18" viewBox="0 0 18 18">
-          <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
-          <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/>
-          <path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/>
-          <path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/>
-        </svg>
-        Continue with Google
-      </button>
-      <button class="skip-btn" onclick="window.location.href='creator.html'">
-        Continue without signing in →
-      </button>
+<!-- App -->
+<div id="app">
+  <nav class="topbar">
+    <a href="/" class="topbar-logo">pick<em>our</em>date</a>
+    <div class="topbar-right">
+      <div class="user-chip" id="user-chip" style="display:none">
+        <div class="user-avatar" id="user-avatar-wrap"></div>
+        <span id="user-name" style="font-size:13px;color:var(--muted)"></span>
+      </div>
+      <button class="btn-sm" onclick="handleSignOut()" id="signout-btn" style="display:none">Sign out</button>
+      <a href="/creator.html" class="btn-create">+ New date</a>
     </div>
-  </div>
+  </nav>
 
-  <div id="dashboard-view" style="display:none">
-    <div class="header">
-      <h1>Your <em>dates.</em></h1>
-      <div class="user-info">
-        <span class="user-name" id="user-name"></span>
-        <button class="sign-out-btn" onclick="signOut()">Sign out</button>
+  <div class="page-body">
+    <div class="page-header">
+      <div>
+        <h2 id="page-title">Your dates <span id="page-sub">Loading…</span></h2>
       </div>
     </div>
-    <a href="creator.html" class="new-date-btn">+ Create a new date plan</a>
-    <div class="pages-list" id="pages-list">
-      <div class="loading">Loading your dates...</div>
+
+    <div class="stats-row" id="stats-row" style="display:none">
+      <div class="stat-card"><div class="val" id="s-total">0</div><div class="label">Created</div></div>
+      <div class="stat-card"><div class="val green" id="s-confirmed">0</div><div class="label">Confirmed</div></div>
+      <div class="stat-card"><div class="val yellow" id="s-pending">0</div><div class="label">Pending</div></div>
+      <div class="stat-card"><div class="val red" id="s-cost">$0</div><div class="label">Total spent</div></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search" placeholder="Search by name or venue…" oninput="applyFilters()" />
+      </div>
+      <select class="filter-select" id="filter-status" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="pending">Pending</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="expired">Expired</option>
+      </select>
+    </div>
+
+    <div class="cards-grid" id="cards-grid">
+      <div style="grid-column:1/-1"><div class="spinner"></div></div>
     </div>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = 'https://jjzscluiudnpzrpfmfje.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqenNjbHVpdWRucHpycGZtZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTU5MDYsImV4cCI6MjA5NTU3MTkwNn0.Gibxci4jo9k5a9khF-kF4SxEPCq57umNr4FUvZBLzh0';
+<!-- Edit Modal -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3>Edit date details</h3>
+    <div class="field">
+      <label>Private notes</label>
+      <textarea id="edit-notes" rows="3" placeholder="Reservation details, reminders…"></textarea>
+    </div>
+    <div class="field">
+      <label>Estimated cost ($)</label>
+      <input type="number" id="edit-cost" placeholder="0.00" step="0.01" min="0" />
+    </div>
+    <div class="field">
+      <label>Link expires (optional)</label>
+      <input type="datetime-local" id="edit-expires" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
 
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        storageKey: 'pickourdate-auth',
-        storage: window.localStorage
-      }
-    });
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <h3>Delete this date?</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.6">
+      The link will stop working for her. This doesn't delete the record permanently — you can contact support to recover it.
+    </p>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeDeleteModal()">Cancel</button>
+      <button style="background:var(--accent);color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:13px;cursor:pointer;" onclick="confirmDelete()">Yes, delete</button>
+    </div>
+  </div>
+</div>
 
-    async function init() {
-      try {
-        const { data: { session } } = await db.auth.getSession();
-        document.getElementById('loading-view').style.display = 'none';
+<div id="toast"></div>
 
-        if (!session) {
-          document.getElementById('login-view').style.display = 'block';
-          return;
-        }
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────
+const SUPABASE_URL     = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SITE_URL         = 'https://pickourdate.co';
 
-        showDashboard(session);
-      } catch (err) {
-        console.error(err);
-        document.getElementById('loading-view').style.display = 'none';
-        document.getElementById('login-view').style.display = 'block';
-      }
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── STATE ──────────────────────────────────────────────────────
+let allPages    = [];
+let currentUser = null;
+let isAnon      = false;
+let editingId   = null;
+let deletingId  = null;
+
+// ── AUTH ───────────────────────────────────────────────────────
+async function signInGoogle() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+}
+
+async function continueAnon() {
+  isAnon = true;
+  showApp();
+  document.getElementById('page-title').innerHTML = 'Your dates <span>browsing without account</span>';
+  loadPages();
+}
+
+async function handleSignOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+async function checkAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (session?.user) {
+    currentUser = session.user;
+    showApp();
+    renderUserChip();
+    loadPages();
+  }
+  // else stay on login screen
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+function renderUserChip() {
+  if (!currentUser) return;
+  const chip   = document.getElementById('user-chip');
+  const wrap   = document.getElementById('user-avatar-wrap');
+  const nameEl = document.getElementById('user-name');
+  const signout = document.getElementById('signout-btn');
+
+  chip.style.display = 'flex';
+  signout.style.display = 'inline-flex';
+
+  const meta = currentUser.user_metadata || {};
+  nameEl.textContent = meta.full_name?.split(' ')[0] || currentUser.email?.split('@')[0] || 'You';
+
+  if (meta.avatar_url) {
+    wrap.innerHTML = `<img src="${meta.avatar_url}" alt="" />`;
+  } else {
+    wrap.textContent = (meta.full_name || 'U').charAt(0).toUpperCase();
+  }
+}
+
+// ── DATA ───────────────────────────────────────────────────────
+async function loadPages() {
+  let query = sb.from('date_pages')
+    .select('*')
+    .is('deleted_at', null)
+    .order('created_at', { ascending: false });
+
+  // RLS will enforce creator_id filter for logged-in users
+  // For anon browsing, we show nothing (they didn't create any)
+  if (isAnon) {
+    renderCards([]);
+    updateStats([]);
+    return;
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    document.getElementById('cards-grid').innerHTML =
+      `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px">Error loading dates: ${error.message}</div>`;
+    return;
+  }
+
+  allPages = data || [];
+  updateStats(allPages);
+  applyFilters();
+}
+
+function updateStats(pages) {
+  const confirmed = pages.filter(p => p.status === 'confirmed');
+  const pending   = pages.filter(p => p.status !== 'confirmed');
+  const totalCost = pages.reduce((s, p) => s + (p.estimated_cost || 0), 0);
+
+  document.getElementById('stats-row').style.display = pages.length ? 'grid' : 'none';
+  document.getElementById('s-total').textContent     = pages.length;
+  document.getElementById('s-confirmed').textContent = confirmed.length;
+  document.getElementById('s-pending').textContent   = pending.length;
+  document.getElementById('s-cost').textContent      = `$${totalCost.toFixed(0)}`;
+
+  const name = currentUser?.user_metadata?.full_name?.split(' ')[0];
+  document.getElementById('page-title').innerHTML =
+    `${name ? name + "'s" : 'Your'} dates <span>${pages.length} page${pages.length !== 1 ? 's' : ''}</span>`;
+}
+
+function applyFilters() {
+  const q      = (document.getElementById('search').value || '').toLowerCase();
+  const status = document.getElementById('filter-status').value;
+  const now    = new Date();
+
+  let pages = [...allPages].filter(p => {
+    const expired = p.expires_at && new Date(p.expires_at) < now;
+    if (status === 'expired'   && !expired) return false;
+    if (status === 'confirmed' && p.status !== 'confirmed') return false;
+    if (status === 'pending'   && (p.status === 'confirmed' || expired)) return false;
+
+    if (q) {
+      const hay = [p.her_name, p.confirmed_venue, p.personal_note, p.slug].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
     }
+    return true;
+  });
 
-    function showDashboard(session) {
-      document.getElementById('login-view').style.display = 'none';
-      document.getElementById('dashboard-view').style.display = 'block';
-      document.getElementById('user-name').textContent = session.user.email;
-      loadDates(session.user.id, session.access_token);
+  renderCards(pages);
+}
+
+// ── RENDER ─────────────────────────────────────────────────────
+function renderCards(pages) {
+  const grid = document.getElementById('cards-grid');
+  const now  = new Date();
+
+  if (!pages.length && !isAnon) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">💌</div>
+        <h3>No dates yet</h3>
+        <p>Create your first date page and send her the link</p>
+        <a href="/creator.html" class="btn-create">+ Create a date</a>
+      </div>`;
+    return;
+  }
+
+  if (isAnon || !pages.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🔒</div>
+        <h3>Sign in to see your dates</h3>
+        <p>Your date pages are private — sign in with Google to access them</p>
+        <button class="btn-create" onclick="signInGoogle()">Sign in with Google</button>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = pages.map(p => {
+    const expired = p.expires_at && new Date(p.expires_at) < now;
+    const status  = expired ? 'expired' : (p.status || 'pending');
+    const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+
+    const venueCount = (() => {
+      try { return (Array.isArray(p.venues) ? p.venues : JSON.parse(p.venues || '[]')).length; }
+      catch { return 0; }
+    })();
+
+    const created  = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : '';
+    const cost     = p.estimated_cost != null ? `$${Number(p.estimated_cost).toFixed(2)}` : null;
+    const expiresStr = p.expires_at ? `Expires ${fmtRelative(p.expires_at)}` : null;
+
+    return `
+    <div class="date-card" id="card-${p.id}">
+      <div class="card-top">
+        <div class="card-name">${esc(p.her_name || 'Date')}</div>
+        <span class="status-pill pill-${status}">${statusLabel}</span>
+      </div>
+
+      ${p.personal_note ? `<div class="card-note">${esc(truncate(p.personal_note, 80))}</div>` : ''}
+
+      ${p.status === 'confirmed' && p.confirmed_venue ? `
+        <div class="confirmed-venue">
+          <span class="icon">✓</span>
+          <div>
+            <div style="font-size:12px;color:var(--green);font-weight:500;margin-bottom:1px">She picked</div>
+            <div style="font-size:13px">${esc(p.confirmed_venue)}${p.confirmed_time ? ` · ${esc(p.confirmed_time)}` : ''}</div>
+          </div>
+        </div>` : ''}
+
+      <div class="card-meta">
+        <span class="meta-chip">📅 ${created}</span>
+        ${venueCount ? `<span class="meta-chip">📍 ${venueCount} venue${venueCount !== 1 ? 's' : ''}</span>` : ''}
+        ${cost        ? `<span class="meta-chip">💰 ${cost}</span>` : ''}
+        ${expiresStr  ? `<span class="meta-chip" style="color:${expired ? 'var(--accent)' : 'var(--muted)'}">⏰ ${expiresStr}</span>` : ''}
+      </div>
+
+      ${p.notes ? `
+        <div class="card-notes-box">
+          <strong>Your notes</strong>
+          ${esc(truncate(p.notes, 100))}
+        </div>` : ''}
+
+      <div class="card-actions">
+        <button class="action-btn primary" onclick="copyLink('${esc(p.slug)}')">Copy link</button>
+        <a href="${SITE_URL}/${esc(p.slug)}" target="_blank" class="action-btn">Preview ↗</a>
+        <button class="action-btn" onclick="openEdit('${p.id}')">✎ Edit</button>
+        <button class="action-btn danger" style="margin-left:auto" onclick="openDelete('${p.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────
+function copyLink(slug) {
+  navigator.clipboard.writeText(`${SITE_URL}/${slug}`);
+  showToast('Link copied to clipboard!');
+}
+
+// Edit modal
+function openEdit(id) {
+  editingId = id;
+  const p = allPages.find(r => r.id === id);
+  document.getElementById('edit-notes').value   = p?.notes || '';
+  document.getElementById('edit-cost').value    = p?.estimated_cost || '';
+  document.getElementById('edit-expires').value = p?.expires_at ? p.expires_at.slice(0,16) : '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeModal() {
+  editingId = null;
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+async function saveEdit() {
+  if (!editingId) return;
+  const update = {
+    notes:          document.getElementById('edit-notes').value || null,
+    estimated_cost: document.getElementById('edit-cost').value ? parseFloat(document.getElementById('edit-cost').value) : null,
+    expires_at:     document.getElementById('edit-expires').value ? new Date(document.getElementById('edit-expires').value).toISOString() : null,
+  };
+  const { error } = await sb.from('date_pages').update(update).eq('id', editingId);
+  if (error) { showToast('Error: ' + error.message); return; }
+  showToast('Saved!');
+  closeModal();
+  loadPages();
+}
+
+// Delete modal
+function openDelete(id) {
+  deletingId = id;
+  document.getElementById('delete-modal').classList.add('open');
+}
+
+function closeDeleteModal() {
+  deletingId = null;
+  document.getElementById('delete-modal').classList.remove('open');
+}
+
+async function confirmDelete() {
+  if (!deletingId) return;
+  const { error } = await sb.from('date_pages').update({ deleted_at: new Date().toISOString() }).eq('id', deletingId);
+  if (error) { showToast('Error: ' + error.message); return; }
+  showToast('Date deleted');
+  closeDeleteModal();
+  loadPages();
+}
+
+// ── UTILS ──────────────────────────────────────────────────────
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function truncate(s, n) {
+  return s.length > n ? s.slice(0,n) + '…' : s;
+}
+
+function fmtRelative(iso) {
+  const diff = new Date(iso) - new Date();
+  const abs  = Math.abs(diff);
+  const days = Math.floor(abs / 86400000);
+  if (diff < 0) return 'expired';
+  if (days === 0) return 'today';
+  if (days === 1) return 'tomorrow';
+  return `in ${days}d`;
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Close modals on backdrop click
+['edit-modal','delete-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target === e.currentTarget) {
+      closeModal(); closeDeleteModal();
     }
+  });
+});
 
-    async function signInWithGoogle() {
-      await db.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: 'https://pickourdate.co/dashboard' }
-      });
-    }
-
-    async function signOut() {
-      await db.auth.signOut();
-      window.location.reload();
-    }
-
-    async function loadDates(userId, token) {
-      try {
-        const { data, error } = await db
-          .from('date_pages')
-          .select('*')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false });
-
-        const container = document.getElementById('pages-list');
-
-        if (error || !data || data.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <h2>No dates yet.</h2>
-              <p>Create your first date plan and send it to someone special.</p>
-              <a href="creator.html" class="new-date-btn" style="display:inline-block;max-width:300px;margin-top:16px">Create a date plan</a>
-            </div>
-          `;
-          return;
-        }
-
-        container.innerHTML = data.map(page => {
-          const venue = page.selected_venue || (page.venues && page.venues[0]) || {};
-          const slot = page.selected_slot || (page.time_slots && page.time_slots[0]) || {};
-          const link = `https://pickourdate.co?id=${page.slug}`;
-          const status = page.status || 'pending';
-
-          return `
-            <div class="date-card">
-              <div class="star" style="top:15%;left:8%;animation-delay:0s"></div>
-              <div class="star" style="top:25%;left:88%;animation-delay:0.6s"></div>
-              <div class="card-top">
-                <div class="guest-name">${page.guest_name}</div>
-                <span class="status-badge ${status}">${status}</span>
-              </div>
-              <div class="card-details">
-                ${venue.name ? `<div class="detail-row">📍 <strong>${venue.name}</strong>${venue.tag ? ` · ${venue.tag}` : ''}</div>` : ''}
-                ${slot.date ? `<div class="detail-row">📅 <strong>${slot.day}, ${slot.date}</strong> at ${slot.time}</div>` : ''}
-                <div class="detail-row">🔗 <span style="word-break:break-all;font-size:12px">${link}</span></div>
-              </div>
-              <div class="card-actions">
-                <button class="card-btn" onclick="copyLink('${link}', this)">Copy link</button>
-                <button class="card-btn">${page.viewed_at ? 'Viewed ✓' : 'Not opened yet'}</button>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById('pages-list').innerHTML = '<div class="loading">Could not load dates.</div>';
-      }
-    }
-
-    function copyLink(link, btn) {
-      navigator.clipboard.writeText(link);
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = 'Copy link'; btn.classList.remove('copied'); }, 2000);
-    }
-
-    db.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        showDashboard(session);
-      }
-    });
-
-    init();
-  </script>
+// ── INIT ───────────────────────────────────────────────────────
+checkAuth();
+</script>
 </body>
 </html>
