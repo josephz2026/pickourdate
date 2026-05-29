@@ -510,12 +510,16 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase.js"></script>
   <script>
-    const _supabase = window.supabase.createClient(
+     const _supabase = window.supabase.createClient(
       'https://jjzscluiudnpzrpfmfje.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqenNjbHVpdWRucHpycGZtZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTU5MDYsImV4cCI6MjA5NTU3MTkwNn0.Gibxci4jo9k5a9khF-kF4SxEPCq57umNr4FUvZBLzh0'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqenNjbHVpdWRucHpycGZtZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTU5MDYsImV4cCI6MjA5NTU3MTkwNn0.Gibxci4jo9k5a9khF-kF4SxEPCq57umNr4FUvZBLzh0',
+      { auth: { persistSession: true, storageKey: 'pickourdate-auth', storage: window.localStorage } }
     );
 
     let currentUserId = null;
+    _supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) currentUserId = session.user.id;
+    });
     try {
       const stored = localStorage.getItem('sb-jjzscluiudnpzrpfmfje-auth-token');
       if (stored) {
