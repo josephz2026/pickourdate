@@ -3,124 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Create a Date Page</title>
+  <title>Create a Date Plan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body { width: 100%; overflow-x: hidden; }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: #0f1c3f;
+      background: #E8E0D5;
       min-height: 100vh;
-      padding: 40px 24px 60px;
-      position: relative;
-      touch-action: pan-y;
+      padding: 32px 20px 60px;
     }
 
-    .bg-glow {
-      position: fixed;
-      width: 600px;
-      height: 600px;
+    .card {
+      background: #12121C;
+      border-radius: 28px;
+      padding: 40px 28px;
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(58,123,213,0.2) 0%, transparent 70%);
-      top: 50%;
+      background: radial-gradient(circle, rgba(80,60,200,0.12) 0%, transparent 70%);
+      top: -150px;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       pointer-events: none;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .header h1 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 48px;
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 400;
       color: white;
       margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
     }
 
-    .header p {
-      font-size: 15px;
-      color: rgba(255,255,255,0.45);
+    .page-title em {
+      font-style: italic;
+      color: rgba(255,255,255,0.4);
     }
 
-    .form {
-      max-width: 520px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+    .page-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 40px;
+      font-weight: 300;
+      position: relative;
+      z-index: 1;
     }
 
     .section {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 24px;
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
     }
 
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #7ab3f5;
+      color: rgba(255,255,255,0.25);
       margin-bottom: 16px;
     }
 
-    label {
-      display: block;
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    input[type="time"],
-    textarea {
-      width: 100%;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      padding: 12px 16px;
-      color: white;
-      font-size: 15px;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
+    .field {
       margin-bottom: 14px;
     }
 
-    input:focus, textarea:focus { border-color: #5b9cf6; }
-    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.25); }
-    textarea { resize: none; height: 80px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 6px;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+    }
 
-    .venue-block {
+    .field input,
+    .field textarea {
+      width: 100%;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 13px 16px;
+      color: white;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field input:focus,
+    .field textarea:focus { border-color: rgba(255,255,255,0.3); }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: rgba(255,255,255,0.15); }
+
+    .field textarea { resize: none; height: 80px; }
+
+    /* Venue blocks */
+    .venue-block {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 14px;
       padding: 16px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
     }
 
-    .venue-block.filled { border-color: rgba(91,156,246,0.4); }
+    .venue-block.filled { border-color: rgba(255,255,255,0.2); }
 
     .venue-number {
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.2);
       margin-bottom: 10px;
     }
+
+    .venue-block input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: white;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      outline: none;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+
+    .venue-block input:focus { border-color: rgba(255,255,255,0.3); }
+    .venue-block input::placeholder { color: rgba(255,255,255,0.15); }
 
     .venue-filled { display: none; }
     .venue-block.filled .venue-filled { display: block; }
@@ -128,159 +157,250 @@
 
     .venue-name-display {
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
       color: white;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .venue-meta {
       font-size: 12px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 10px;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 12px;
     }
 
-    .venue-tag-select {
+    .tag-row {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .tag-pill {
       font-size: 11px;
       padding: 4px 12px;
       border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.35);
       cursor: pointer;
-      transition: all 0.15s;
       background: transparent;
       font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
     }
 
     .tag-pill.active {
-      background: rgba(58,123,213,0.3);
-      color: #7ab3f5;
-      border-color: #5b9cf6;
+      border-color: rgba(255,255,255,0.5);
+      color: white;
     }
 
-    .remove-venue {
-      font-size: 12px;
-      color: rgba(255,100,100,0.6);
-      cursor: pointer;
+    .remove-btn {
+      font-size: 11px;
+      color: rgba(255,80,80,0.4);
       background: none;
       border: none;
+      cursor: pointer;
       font-family: 'DM Sans', sans-serif;
       padding: 0;
+      transition: color 0.2s;
     }
 
-    .remove-venue:hover { color: rgba(255,100,100,1); }
+    .remove-btn:hover { color: rgba(255,80,80,0.8); }
 
-    .fetch-btn {
-      width: 100%;
-      padding: 11px;
-      border-radius: 50px;
-      border: 1px solid rgba(91,156,246,0.4);
-      background: rgba(58,123,213,0.15);
-      color: #7ab3f5;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .fetch-btn:hover { background: rgba(58,123,213,0.3); }
-    .fetch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .add-venue-btn {
+    .ghost-btn {
       width: 100%;
       padding: 12px;
       border-radius: 50px;
-      border: 1px dashed rgba(255,255,255,0.2);
+      border: 1px dashed rgba(255,255,255,0.15);
       background: transparent;
-      color: rgba(255,255,255,0.4);
-      font-size: 13px;
-      font-weight: 600;
+      color: rgba(255,255,255,0.25);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .add-venue-btn:hover {
-      border-color: rgba(255,255,255,0.4);
-      color: rgba(255,255,255,0.7);
+    .ghost-btn:hover {
+      border-color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.5);
     }
 
-    .slot-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-      align-items: center;
-    }
-
-    .slot-row input { margin-bottom: 0; flex: 1; }
-
-    .remove-slot {
-      background: none;
-      border: none;
-      color: rgba(255,100,100,0.6);
-      cursor: pointer;
-      font-size: 18px;
-      padding: 0 4px;
-      flex-shrink: 0;
-    }
-
-    .remove-slot:hover { color: rgba(255,100,100,1); }
-
-    .add-slot-btn {
+    .fetch-btn {
       width: 100%;
       padding: 10px;
       border-radius: 50px;
-      border: 1px dashed rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.15);
       background: transparent;
       color: rgba(255,255,255,0.4);
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.08em;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .add-slot-btn:hover {
-      border-color: rgba(255,255,255,0.4);
+    .fetch-btn:hover {
+      border-color: rgba(255,255,255,0.35);
       color: rgba(255,255,255,0.7);
     }
 
+    .fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Custom date/time slot */
+    .slot-block {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+
+    .slot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .slot-num {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* Month navigation */
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .month-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+    }
+
+    .month-arrow {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.3);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px 8px;
+      transition: color 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .month-arrow:hover { color: white; }
+
+    /* Calendar grid */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      margin-bottom: 14px;
+    }
+
+    .cal-day-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+      padding: 4px 0;
+      letter-spacing: 0.05em;
+    }
+
+    .cal-day {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 7px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .cal-day:hover { background: rgba(255,255,255,0.08); color: white; }
+    .cal-day.selected { background: white; color: #12121C; font-weight: 500; }
+    .cal-day.empty { cursor: default; }
+    .cal-day.past { opacity: 0.2; cursor: not-allowed; }
+
+    /* Time picker */
+    .time-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .time-select {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: white;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      text-align: center;
+    }
+
+    .time-select:focus { border-color: rgba(255,255,255,0.3); }
+
+    .time-select option { background: #1a1a2e; color: white; }
+
+    .time-colon {
+      color: rgba(255,255,255,0.3);
+      font-size: 16px;
+    }
+
+    .slot-selected-display {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      display: none;
+    }
+
+    .slot-selected-display.show { display: block; }
+
+    /* Toggle */
     .toggle-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .toggle-row:last-child { border-bottom: none; }
+    .toggle-row:last-of-type { border-bottom: none; }
 
     .toggle-info { flex: 1; }
 
     .toggle-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: white;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
       margin-bottom: 2px;
+      font-weight: 400;
     }
 
     .toggle-desc {
-      font-size: 12px;
-      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
     }
 
     .toggle-track {
       position: relative;
       width: 36px;
       height: 20px;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.1);
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
@@ -288,7 +408,7 @@
       margin-left: 16px;
     }
 
-    .toggle-track.on { background: #3a7bd5; }
+    .toggle-track.on { background: rgba(255,255,255,0.5); }
 
     .toggle-thumb {
       position: absolute;
@@ -303,116 +423,143 @@
 
     .toggle-track.on .toggle-thumb { transform: translateX(16px); }
 
+    /* Generate button */
     .generate-btn {
       width: 100%;
-      padding: 20px;
+      padding: 18px;
       border-radius: 50px;
-      border: none;
-      background: #3a7bd5;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: transparent;
       color: white;
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
     }
 
     .generate-btn:hover {
-      background: #2d66bb;
-      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.05);
     }
 
-    .generate-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+    /* Link box */
     .link-box {
       display: none;
-      background: rgba(58,213,130,0.1);
-      border: 1px solid rgba(91,232,160,0.3);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 16px;
-      padding: 20px;
+      padding: 24px;
       text-align: center;
+      margin-top: 16px;
+      position: relative;
+      z-index: 1;
     }
 
     .link-box.show { display: block; }
 
     .link-label {
-      font-size: 12px;
-      color: #5be8a0;
-      font-weight: 600;
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
       margin-bottom: 12px;
     }
 
     .link-url {
-      font-size: 14px;
-      color: white;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
       word-break: break-all;
       margin-bottom: 16px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.04);
       padding: 10px 14px;
       border-radius: 10px;
+      font-weight: 300;
     }
 
     .copy-btn {
       padding: 12px 32px;
       border-radius: 50px;
-      border: none;
-      background: #3a7bd5;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: transparent;
       color: white;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .copy-btn:hover { background: #2d66bb; }
+    .copy-btn:hover {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .page-footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.1);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
-  <div class="bg-glow"></div>
 
-  <div class="header">
-    <h1>Create a date.</h1>
-    <p>Fill this in and send her the link.</p>
-  </div>
+  <div class="card">
+    <div class="glow"></div>
 
-  <div class="form">
+    <h1 class="page-title">Plan a <em>date.</em></h1>
+    <p class="page-sub">Fill this in and send her the link.</p>
 
+    <!-- Her details -->
     <div class="section">
-      <div class="section-title">✦ Her details</div>
-      <label>Her first name</label>
-      <input type="text" id="guest-name" placeholder="Sara" />
-      <label>Personal note <span style="color:rgba(255,255,255,0.25);font-weight:400">(optional)</span></label>
-      <textarea id="personal-note" placeholder="Thought you should have a say in this one."></textarea>
+      <div class="section-label">Her details</div>
+      <div class="field">
+        <label>Her first name</label>
+        <input type="text" id="guest-name" placeholder="Sara" />
+      </div>
+      <div class="field">
+        <label>Personal note <span style="opacity:0.5">(optional)</span></label>
+        <textarea id="personal-note" placeholder="Thought you should have a say in this one."></textarea>
+      </div>
     </div>
 
+    <!-- Venues -->
     <div class="section">
-      <div class="section-title">✦ Venues</div>
+      <div class="section-label">Venues</div>
       <div id="venues-container"></div>
-      <button class="add-venue-btn" onclick="addVenue()" id="add-venue-btn">+ Add a venue</button>
+      <button class="ghost-btn" onclick="addVenue()" id="add-venue-btn">+ add a venue</button>
     </div>
 
+    <!-- Time slots -->
     <div class="section">
-      <div class="section-title">✦ Time slots</div>
+      <div class="section-label">Time slots</div>
       <div id="slots-container"></div>
-      <button class="add-slot-btn" onclick="addSlot()">+ Add a time slot</button>
+      <button class="ghost-btn" onclick="addSlot()">+ add a time slot</button>
     </div>
 
+    <!-- Settings -->
     <div class="section">
-      <div class="section-title">✦ Settings</div>
+      <div class="section-label">Settings</div>
 
       <div class="toggle-row">
         <div class="toggle-info">
           <div class="toggle-title">Allow "suggest a different place"</div>
           <div class="toggle-desc">She can propose her own idea</div>
         </div>
-        <div class="toggle-track" id="escape-toggle" onclick="toggle('escape-toggle')">
+        <div class="toggle-track" id="escape-toggle" onclick="toggleSwitch('escape-toggle')">
           <div class="toggle-thumb"></div>
         </div>
       </div>
@@ -422,38 +569,45 @@
           <div class="toggle-title">Notify me when she responds</div>
           <div class="toggle-desc">Get an email when she confirms</div>
         </div>
-        <div class="toggle-track on" id="notify-toggle" onclick="toggle('notify-toggle')">
+        <div class="toggle-track on" id="notify-toggle" onclick="toggleSwitch('notify-toggle')">
           <div class="toggle-thumb"></div>
         </div>
       </div>
 
       <div id="email-row" style="margin-top:14px">
-        <label>Your email</label>
-        <input type="email" id="notify-email" placeholder="you@gmail.com" />
+        <div class="field">
+          <label>Your email</label>
+          <input type="email" id="notify-email" placeholder="you@gmail.com" />
+        </div>
       </div>
     </div>
 
     <button class="generate-btn" id="generate-btn" onclick="generateLink()">
-      Generate link →
+      Generate link
     </button>
 
     <div class="link-box" id="link-box">
-      <div class="link-label">✓ Your date link is ready</div>
+      <div class="link-label">Your date link is ready</div>
       <div class="link-url" id="link-url"></div>
       <button class="copy-btn" onclick="copyLink()">Copy link</button>
     </div>
 
+    <p class="page-footer">pickourdate.co</p>
   </div>
 
   <script src="supabase.js"></script>
   <script>
     const GOOGLE_API_KEY = 'AIzaSyD_DaAeYKppA38WZx7y4jWBSD8VLUXIpBk';
-    const categories = ['Drinks', 'Dinner', 'Rooftop', 'Coffee', 'Park', 'Concert', 'Activity'];
+    const CATEGORIES = ['Drinks','Dinner','Rooftop','Coffee','Park','Concert','Activity'];
+    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
     let venues = [];
     let slots = [];
     let generatedLink = '';
 
-    function toggle(id) {
+    // ── TOGGLES ──
+    function toggleSwitch(id) {
       const track = document.getElementById(id);
       track.classList.toggle('on');
       if (id === 'notify-toggle') {
@@ -462,10 +616,11 @@
       }
     }
 
+    // ── VENUES ──
     function addVenue() {
       const index = venues.length;
       if (index >= 4) return;
-      venues.push({ name: '', tag: 'Dinner', address: '', maps: '', rating: 0, reviews: '0' });
+      venues.push({ name: '', tag: 'Dinner', address: '', maps: '', rating: 4.5, reviews: '500+' });
 
       const container = document.getElementById('venues-container');
       const block = document.createElement('div');
@@ -474,22 +629,18 @@
       block.innerHTML = `
         <div class="venue-number">Venue ${index + 1}</div>
         <div class="venue-input-area">
-          <input type="text" placeholder="Paste Google Maps link or venue name"
-            id="venue-input-${index}" style="margin-bottom:10px" />
-          <button class="fetch-btn" onclick="fillVenue(${index})">Auto-fill from Maps ✦</button>
+          <input type="text" placeholder="Paste Google Maps link or venue name" id="venue-input-${index}" />
+          <button class="fetch-btn" onclick="fillVenue(${index})">Auto-fill from Maps</button>
         </div>
         <div class="venue-filled" id="venue-filled-${index}">
           <div class="venue-name-display" id="venue-name-${index}"></div>
           <div class="venue-meta" id="venue-meta-${index}"></div>
-          <div class="venue-tag-select" id="venue-tags-${index}"></div>
-          <button class="remove-venue" onclick="removeVenue(${index})">Remove</button>
+          <div class="tag-row" id="venue-tags-${index}"></div>
+          <button class="remove-btn" onclick="removeVenue(${index})">Remove</button>
         </div>
       `;
       container.appendChild(block);
-
-      if (venues.length >= 4) {
-        document.getElementById('add-venue-btn').style.display = 'none';
-      }
+      if (venues.length >= 4) document.getElementById('add-venue-btn').style.display = 'none';
     }
 
     async function fillVenue(index) {
@@ -502,12 +653,9 @@
 
       try {
         let placeName = input;
-
         if (input.startsWith('http')) {
           const match = input.match(/place\/([^/@]+)/);
-          if (match) {
-            placeName = decodeURIComponent(match[1].replace(/\+/g, ' '));
-          }
+          if (match) placeName = decodeURIComponent(match[1].replace(/\+/g, ' '));
         }
 
         const searchUrl = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(placeName)}&inputtype=textquery&fields=name,rating,user_ratings_total,formatted_address,place_id&key=${GOOGLE_API_KEY}`;
@@ -522,64 +670,49 @@
             address: place.formatted_address || 'New York, NY',
             maps: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`,
             rating: place.rating || 4.5,
-            reviews: place.user_ratings_total
-              ? place.user_ratings_total.toLocaleString()
-              : '500+'
+            reviews: place.user_ratings_total ? place.user_ratings_total.toLocaleString() : '500+'
           };
         } else {
           venues[index] = {
             name: placeName,
             tag: 'Dinner',
             address: 'New York, NY',
-            maps: input.startsWith('http')
-              ? input
-              : `https://maps.google.com/?q=${encodeURIComponent(placeName)}`,
+            maps: input.startsWith('http') ? input : `https://maps.google.com/?q=${encodeURIComponent(placeName)}`,
             rating: 4.5,
             reviews: '500+'
           };
         }
-
         showVenueFilled(index);
-
       } catch (err) {
-        console.error(err);
         venues[index] = {
           name: input.startsWith('http') ? 'Venue ' + (index + 1) : input,
           tag: 'Dinner',
           address: 'New York, NY',
-          maps: input.startsWith('http')
-            ? input
-            : `https://maps.google.com/?q=${encodeURIComponent(input)}`,
+          maps: input.startsWith('http') ? input : `https://maps.google.com/?q=${encodeURIComponent(input)}`,
           rating: 4.5,
           reviews: '500+'
         };
         showVenueFilled(index);
       } finally {
-        btn.textContent = 'Auto-fill from Maps ✦';
+        btn.textContent = 'Auto-fill from Maps';
         btn.disabled = false;
       }
     }
 
     function showVenueFilled(index) {
       const v = venues[index];
-      const block = document.getElementById(`venue-block-${index}`);
-      block.classList.add('filled');
-
+      document.getElementById(`venue-block-${index}`).classList.add('filled');
       document.getElementById(`venue-name-${index}`).textContent = v.name;
-      document.getElementById(`venue-meta-${index}`).textContent =
-        `${v.address} · ${v.rating} ★`;
-
-      const tagsContainer = document.getElementById(`venue-tags-${index}`);
-      tagsContainer.innerHTML = categories.map(cat => `
-        <button class="tag-pill ${cat === v.tag ? 'active' : ''}"
-          onclick="setTag(${index}, '${cat}', this)">${cat}</button>
-      `).join('');
+      document.getElementById(`venue-meta-${index}`).textContent = `${v.address} · ${v.rating}★`;
+      const tagsEl = document.getElementById(`venue-tags-${index}`);
+      tagsEl.innerHTML = CATEGORIES.map(cat =>
+        `<button class="tag-pill ${cat === v.tag ? 'active' : ''}" onclick="setTag(${index},'${cat}',this)">${cat}</button>`
+      ).join('');
     }
 
     function setTag(index, tag, el) {
       venues[index].tag = tag;
-      const container = document.getElementById(`venue-tags-${index}`);
-      container.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+      document.getElementById(`venue-tags-${index}`).querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
       el.classList.add('active');
     }
 
@@ -589,41 +722,139 @@
       document.getElementById('add-venue-btn').style.display = 'block';
     }
 
+    // ── TIME SLOTS ──
     function addSlot() {
       const index = slots.length;
-      slots.push({ date: '', time: '' });
+      slots.push({ day: '', date: '', time: '', hour: '7', minute: '00', ampm: 'PM', calYear: null, calMonth: null });
+
+      const now = new Date();
+      slots[index].calYear = now.getFullYear();
+      slots[index].calMonth = now.getMonth();
 
       const container = document.getElementById('slots-container');
-      const row = document.createElement('div');
-      row.className = 'slot-row';
-      row.id = `slot-row-${index}`;
-      row.innerHTML = `
-        <input type="date" id="slot-date-${index}" onchange="updateSlot(${index})" />
-        <input type="time" id="slot-time-${index}" onchange="updateSlot(${index})" />
-        <button class="remove-slot" onclick="removeSlot(${index})">×</button>
+      const block = document.createElement('div');
+      block.className = 'slot-block';
+      block.id = `slot-block-${index}`;
+      block.innerHTML = `
+        <div class="slot-header">
+          <span class="slot-num">Time slot ${index + 1}</span>
+          <button class="remove-btn" onclick="removeSlot(${index})">Remove</button>
+        </div>
+        <div class="month-nav">
+          <button class="month-arrow" onclick="prevMonth(${index})">‹</button>
+          <span class="month-label" id="month-label-${index}"></span>
+          <button class="month-arrow" onclick="nextMonth(${index})">›</button>
+        </div>
+        <div class="cal-grid" id="cal-${index}"></div>
+        <div class="time-row">
+          <select class="time-select" id="hour-${index}" onchange="updateTime(${index})">
+            ${[1,2,3,4,5,6,7,8,9,10,11,12].map(h =>
+              `<option value="${h}" ${h===7?'selected':''}>${h}</option>`
+            ).join('')}
+          </select>
+          <span class="time-colon">:</span>
+          <select class="time-select" id="min-${index}" onchange="updateTime(${index})">
+            ${['00','15','30','45'].map(m =>
+              `<option value="${m}">${m}</option>`
+            ).join('')}
+          </select>
+          <select class="time-select" id="ampm-${index}" onchange="updateTime(${index})">
+            <option value="AM">AM</option>
+            <option value="PM" selected>PM</option>
+          </select>
+        </div>
+        <div class="slot-selected-display" id="slot-display-${index}"></div>
       `;
-      container.appendChild(row);
+      container.appendChild(block);
+      renderCalendar(index);
     }
 
-    function updateSlot(index) {
-      const date = document.getElementById(`slot-date-${index}`).value;
-      const time = document.getElementById(`slot-time-${index}`).value;
-      if (date && time) {
-        const d = new Date(date + 'T' + time);
-        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        slots[index] = {
-          day: days[d.getDay()],
-          date: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }),
-          time: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-        };
+    function renderCalendar(index) {
+      const s = slots[index];
+      const year = s.calYear;
+      const month = s.calMonth;
+      const label = document.getElementById(`month-label-${index}`);
+      label.textContent = `${MONTHS[month]} ${year}`;
+
+      const cal = document.getElementById(`cal-${index}`);
+      cal.innerHTML = DAYS.map(d => `<div class="cal-day-label">${d}</div>`).join('');
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+
+      for (let i = 0; i < firstDay; i++) {
+        cal.innerHTML += `<div class="cal-day empty"></div>`;
       }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(year, month, d);
+        const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const isSelected = s.calDay === d;
+        cal.innerHTML += `<div class="cal-day ${isPast ? 'past' : ''} ${isSelected ? 'selected' : ''}"
+          onclick="${isPast ? '' : `selectDay(${index}, ${d})`}">${d}</div>`;
+      }
+    }
+
+    function selectDay(index, day) {
+      slots[index].calDay = day;
+      renderCalendar(index);
+      updateSlotDisplay(index);
+    }
+
+    function prevMonth(index) {
+      if (slots[index].calMonth === 0) {
+        slots[index].calMonth = 11;
+        slots[index].calYear--;
+      } else {
+        slots[index].calMonth--;
+      }
+      renderCalendar(index);
+    }
+
+    function nextMonth(index) {
+      if (slots[index].calMonth === 11) {
+        slots[index].calMonth = 0;
+        slots[index].calYear++;
+      } else {
+        slots[index].calMonth++;
+      }
+      renderCalendar(index);
+    }
+
+    function updateTime(index) {
+      updateSlotDisplay(index);
+    }
+
+    function updateSlotDisplay(index) {
+      const s = slots[index];
+      if (!s.calDay) return;
+
+      const hour = document.getElementById(`hour-${index}`).value;
+      const min = document.getElementById(`min-${index}`).value;
+      const ampm = document.getElementById(`ampm-${index}`).value;
+      const date = new Date(s.calYear, s.calMonth, s.calDay);
+      const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][date.getDay()];
+      const monthName = MONTHS[s.calMonth];
+
+      slots[index] = {
+        ...s,
+        day: dayName,
+        date: `${monthName} ${s.calDay}`,
+        time: `${hour}:${min} ${ampm}`
+      };
+
+      const display = document.getElementById(`slot-display-${index}`);
+      display.textContent = `${dayName}, ${monthName} ${s.calDay} at ${hour}:${min} ${ampm}`;
+      display.classList.add('show');
     }
 
     function removeSlot(index) {
       slots[index] = null;
-      document.getElementById(`slot-row-${index}`).remove();
+      document.getElementById(`slot-block-${index}`).remove();
     }
 
+    // ── GENERATE ──
     function generateSlug(name) {
       const random = Math.random().toString(36).substring(2, 7);
       return `${name.toLowerCase().replace(/\s+/g, '')}-${random}`;
@@ -660,12 +891,10 @@
           status: 'pending'
         });
 
-        const baseUrl = window.location.origin;
-        generatedLink = `${baseUrl}?id=${slug}`;
-
+        generatedLink = `https://pickourdate.co?id=${slug}`;
         document.getElementById('link-url').textContent = generatedLink;
         document.getElementById('link-box').classList.add('show');
-        btn.textContent = '✓ Link created';
+        btn.textContent = 'Link created';
 
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
@@ -673,7 +902,7 @@
         console.error(err);
         alert('Something went wrong. Please try again.');
         btn.disabled = false;
-        btn.textContent = 'Generate link →';
+        btn.textContent = 'Generate link';
       }
     }
 

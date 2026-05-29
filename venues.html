@@ -4,189 +4,193 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pick a Spot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body { width: 100%; overflow-x: hidden; }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: #0f1c3f;
+      background: #E8E0D5;
       min-height: 100vh;
-      min-height: 100dvh;
-      padding: 40px 24px;
-      position: relative;
+      padding: 40px 20px 60px;
       touch-action: pan-y;
-    }
-
-    .bg-glow {
-      position: fixed;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(58,123,213,0.2) 0%, transparent 70%);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
 
     .header h1 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 48px;
-      color: white;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 9vw, 52px);
+      font-weight: 400;
+      color: #12121C;
       margin-bottom: 8px;
+      line-height: 1.1;
+    }
+
+    .header h1 em {
+      font-style: italic;
+      color: rgba(18,18,28,0.4);
     }
 
     .header p {
-      font-size: 15px;
-      color: rgba(255,255,255,0.45);
+      font-size: 13px;
+      color: rgba(18,18,28,0.4);
+      font-weight: 300;
+      letter-spacing: 0.05em;
     }
 
     .cards {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      max-width: 520px;
+      gap: 14px;
+      max-width: 500px;
       margin: 0 auto;
     }
 
     .venue-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
+      background: #12121C;
+      border-radius: 24px;
       overflow: hidden;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s;
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .venue-card:hover {
-      border-color: rgba(91,156,246,0.5);
-      background: rgba(255,255,255,0.08);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.15);
     }
 
     .venue-card.selected {
-      border-color: #5b9cf6;
-      background: rgba(58,123,213,0.15);
+      border-color: rgba(255,255,255,0.4);
     }
 
     .venue-img {
       width: 100%;
-      height: 160px;
-      background: rgba(58,123,213,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
     }
 
-    .venue-body { padding: 20px; }
+    .venue-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(18,18,28,0.8) 100%);
+    }
+
+    .venue-img-tag {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 10px;
+      padding: 4px 12px;
+      border-radius: 50px;
+      background: rgba(18,18,28,0.7);
+      color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+
+    .venue-body { padding: 18px 20px 20px; }
 
     .venue-top {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       gap: 10px;
     }
 
     a.venue-name {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 500;
       color: white;
       text-decoration: none;
-      transition: color 0.15s;
+      transition: opacity 0.15s;
+      font-family: 'Playfair Display', serif;
     }
 
-    a.venue-name:hover {
-      color: #5b9cf6;
-      text-decoration: underline;
-    }
-
-    .venue-tag {
-      font-size: 11px;
-      padding: 4px 12px;
-      border-radius: 50px;
-      background: rgba(58,123,213,0.3);
-      color: #7ab3f5;
-      border: 1px solid rgba(91,156,246,0.3);
-      font-weight: 500;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+    a.venue-name:hover { opacity: 0.7; }
 
     .venue-stars {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
+      gap: 3px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
       margin-bottom: 6px;
     }
 
-    .star-filled { color: #f5c842; }
+    .star-filled { color: #e8b84b; }
 
     .venue-address {
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 14px;
+      font-weight: 300;
     }
 
     .venue-link {
-      font-size: 13px;
-      color: #5b9cf6;
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
       text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
     }
 
-    .venue-link:hover { text-decoration: underline; }
+    .venue-link:hover { color: rgba(255,255,255,0.6); }
 
     .select-btn {
       margin-top: 14px;
       width: 100%;
-      padding: 12px;
+      padding: 13px;
       border-radius: 50px;
       border: 1px solid rgba(255,255,255,0.15);
       background: transparent;
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .select-btn:hover {
-      background: rgba(58,123,213,0.3);
-      border-color: #5b9cf6;
+      border-color: rgba(255,255,255,0.35);
+      color: white;
     }
 
     .venue-card.selected .select-btn {
-      background: #3a7bd5;
-      border-color: #3a7bd5;
+      border-color: rgba(255,255,255,0.5);
+      color: white;
+      background: rgba(255,255,255,0.08);
     }
 
     .continue-wrap {
-      max-width: 520px;
-      margin: 24px auto 0;
+      max-width: 500px;
+      margin: 20px auto 0;
     }
 
     .continue-btn {
       width: 100%;
       padding: 18px;
       border-radius: 50px;
-      border: none;
-      background: #3a7bd5;
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
+      border: 1px solid rgba(18,18,28,0.2);
+      background: #12121C;
+      color: rgba(255,255,255,0.3);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
@@ -197,31 +201,31 @@
     .continue-btn.active {
       opacity: 1;
       pointer-events: all;
+      color: white;
     }
 
     .continue-btn.active:hover {
-      background: #2d66bb;
+      background: #1e1e2e;
       transform: translateY(-2px);
     }
 
     .loading {
       text-align: center;
-      color: rgba(255,255,255,0.5);
-      font-size: 15px;
-      padding: 40px;
+      color: rgba(18,18,28,0.4);
+      font-size: 14px;
+      padding: 60px 0;
     }
   </style>
 </head>
 <body>
-  <div class="bg-glow"></div>
 
   <div class="header">
-    <h1 id="header-title">Pick a spot.</h1>
+    <h1 id="header-title">Pick a <em>spot.</em></h1>
     <p>A few ideas — you choose.</p>
   </div>
 
   <div class="cards" id="cards">
-    <div class="loading">Loading venues...</div>
+    <div class="loading">Loading...</div>
   </div>
 
   <div class="continue-wrap">
@@ -236,25 +240,25 @@
     let venues = [];
     let guestName = '';
 
-    const emojis = {
-      'dinner': '🍽️',
-      'drinks': '🍸',
-      'rooftop': '🌃',
-      'coffee': '☕',
-      'park': '🌳',
-      'concert': '🎵',
-      'activity': '🎯',
-      'default': '📍'
+   const photos = {
+      'dinner': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80&auto=format&fit=crop',
+      'drinks': 'https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=800&q=80&auto=format&fit=crop',
+      'rooftop': 'https://images.unsplash.com/photo-1556911899-5df3026220fe?w=800&q=80&auto=format&fit=crop',
+      'coffee': 'https://images.unsplash.com/photo-1542338332-76971ae8c292?w=800&q=80&auto=format&fit=crop',
+      'park': 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=800&q=80&auto=format&fit=crop',
+      'concert': 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80&auto=format&fit=crop',
+      'activity': 'https://images.unsplash.com/photo-1467139701929-18c0d27a7516?w=800&q=80&auto=format&fit=crop',
+      'default': 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80&auto=format&fit=crop'
     };
 
-    function getEmoji(tag) {
-      return emojis[tag.toLowerCase()] || emojis['default'];
+    function getPhoto(tag) {
+      return photos[tag.toLowerCase()] || photos['default'];
     }
 
     function renderStars(rating) {
       let stars = '';
       for (let i = 1; i <= 5; i++) {
-        stars += `<span class="${i <= Math.round(rating) ? 'star-filled' : ''}" style="${i > Math.round(rating) ? 'color:rgba(255,255,255,0.2)' : ''}">★</span>`;
+        stars += `<span class="${i <= Math.round(rating) ? 'star-filled' : ''}" style="${i > Math.round(rating) ? 'color:rgba(255,255,255,0.15)' : ''}">★</span>`;
       }
       return stars;
     }
@@ -266,17 +270,19 @@
         const n = index + 1;
         container.innerHTML += `
           <div class="venue-card" id="card${n}" onclick="selectVenue(${n})">
-            <div class="venue-img">${getEmoji(venue.tag)}</div>
+            <div class="venue-img" style="background-image:url('${getPhoto(venue.tag)}')">
+              <div class="venue-img-overlay"></div>
+              <div class="venue-img-tag">${venue.tag}</div>
+            </div>
             <div class="venue-body">
               <div class="venue-top">
                 <a href="${venue.maps}" target="_blank" class="venue-name" onclick="event.stopPropagation()">${venue.name}</a>
-                <span class="venue-tag">${venue.tag}</span>
               </div>
               <div class="venue-stars">
                 ${renderStars(venue.rating)}
-                <span>${venue.rating} · ${venue.reviews} reviews</span>
+                <span style="margin-left:4px">${venue.rating} · ${venue.reviews} reviews</span>
               </div>
-              <div class="venue-address">📍 ${venue.address}</div>
+              <div class="venue-address">${venue.address}</div>
               <a class="venue-link" href="${venue.maps}" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>
               <button class="select-btn" id="btn${n}">Choose this spot</button>
             </div>
@@ -300,7 +306,7 @@
         const page = await getDatePage(slug);
         if (!page) return;
         guestName = page.guest_name;
-        document.getElementById('header-title').textContent = `Pick a spot, ${guestName}.`;
+        document.getElementById('header-title').innerHTML = `Pick a <em>spot,</em> ${guestName}.`;
         venues = page.venues;
         renderVenues(venues);
       } catch (err) {
