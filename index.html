@@ -259,7 +259,7 @@
   <script>
     async function init() {
       const params = new URLSearchParams(window.location.search);
-const slug = window.location.pathname.replace('/', '') || params.get('id');
+const slug = window.location.pathname.replace(/^\//, '') || params.get('id');
       if (!slug) {
         document.getElementById('landing').classList.remove('hidden');
         return;
