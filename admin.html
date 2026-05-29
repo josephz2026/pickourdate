@@ -727,7 +727,7 @@ function applyFilters() {
     if (status === 'pending'  && r.status !== 'pending') return false;
 
     if (q) {
-      const hay = [r.her_name, r.slug, r.guest_email, r.creator_id, r.confirmed_venue].join(' ').toLowerCase();
+      const hay = [r.guest_name, r.slug, r.guest_email, r.creator_id, r.selected_venue].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -762,7 +762,7 @@ function renderTable(rows) {
     const expires  = r.expires_at ? fmtDate(r.expires_at) : '—';
     const cost     = r.estimated_cost != null ? `${r.currency || '$'}${Number(r.estimated_cost).toFixed(2)}` : '—';
     const notes    = r.notes ? truncate(r.notes, 30) : '<span style="color:var(--muted)">—</span>';
-    const initials = (r.her_name || '?').charAt(0).toUpperCase();
+    const initials = (r.guest_name || '?').charAt(0).toUpperCase();
 
     return `
     <tr class="${deleted ? 'deleted' : ''}" id="row-${r.id}">
@@ -774,7 +774,7 @@ function renderTable(rows) {
           </div>
         </div>
       </td>
-      <td>${esc(r.her_name || '—')}</td>
+      <td>${esc(r.guest_name || '—')}</td>
       <td><a class="slug-link" href="${SITE_URL}/${esc(r.slug)}" target="_blank">/${esc(r.slug || '—')}</a></td>
       <td>${pill}</td>
       <td class="mono" style="color:var(--muted)">${venueCount}</td>
@@ -810,10 +810,10 @@ function renderTable(rows) {
           <div class="detail-section">
             <h4>Guest Info</h4>
             <div class="detail-kv">
-              <div class="kv-row"><span class="kv-key">Her name</span><span class="kv-val">${esc(r.her_name || '—')}</span></div>
+              <div class="kv-row"><span class="kv-key">Her name</span><span class="kv-val">${esc(r.guest_name || '—')}</span></div>
               <div class="kv-row"><span class="kv-key">Guest email</span><span class="kv-val">${esc(r.guest_email || '—')}</span></div>
-              <div class="kv-row"><span class="kv-key">Confirmed venue</span><span class="kv-val">${esc(r.confirmed_venue || '—')}</span></div>
-              <div class="kv-row"><span class="kv-key">Confirmed time</span><span class="kv-val">${esc(r.confirmed_time || '—')}</span></div>
+              <div class="kv-row"><span class="kv-key">Confirmed venue</span><span class="kv-val">${esc(r.selected_venue || '—')}</span></div>
+              <div class="kv-row"><span class="kv-key">Confirmed time</span><span class="kv-val">${esc(r.selected_slot || '—')}</span></div>
             </div>
           </div>
           <div class="detail-section">
