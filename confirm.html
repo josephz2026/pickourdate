@@ -325,7 +325,8 @@
             selected_venue: venue,
             selected_slot: slot,
             status: 'confirmed',
-            confirmed_at: new Date().toISOString()
+            confirmed_at: new Date().toISOString(),
+            ...(guestEmail && { guest_email: guestEmail })
           });
 
           const page = await getDatePage(slug);
