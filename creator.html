@@ -519,7 +519,11 @@
 
   <div class="card">
     <div class="glow"></div>
-
+<div id="auth-bar" style="text-align:right;margin-bottom:20px;position:relative;z-index:1;">
+      <button onclick="goToDashboard()" style="font-size:12px;color:rgba(255,255,255,0.35);background:none;border:1px solid rgba(255,255,255,0.15);border-radius:50px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s" 
+        onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.35)'"
+        id="dashboard-btn">My dates →</button>
+    </div>
     <h1 class="page-title">Plan a <em>date.</em></h1>
     <p class="page-sub">Fill this in and send her the link.</p>
 
@@ -597,6 +601,17 @@
 
   <script src="supabase.js"></script>
   <script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const _supabase = window.supabase.createClient(
+    'https://jjzscluiudnpzrpfmfje.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqenNjbHVpdWRucHpycGZtZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTU5MDYsImV4cCI6MjA5NTU3MTkwNn0.Gibxci4jo9k5a9khF-kF4SxEPCq57umNr4FUvZBLzh0'
+  );
+  let currentUserId = null;
+  _supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) currentUserId = session.user.id;
+  });
+</script>
     const CATEGORIES = ['Drinks','Dinner','Rooftop','Coffee','Park','Concert','Activity'];
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -876,7 +891,8 @@
           date_mode: 'slots',
           allow_escape: allowEscape,
           notify_email: notifyEmail || null,
-          status: 'pending'
+          status: 'pending',
+          user_id: currentUserId || null
         });
 
         generatedLink = `https://pickourdate.co?id=${slug}`;
@@ -900,7 +916,12 @@
       btn.textContent = 'Copied!';
       setTimeout(() => btn.textContent = 'Copy link', 2000);
     }
+function goToDashboard() {
+      window.location.href = '/dashboard';
+    }
 
+    addVenue();
+    addSlot();
     addVenue();
     addSlot();
   </script>
