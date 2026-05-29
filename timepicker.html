@@ -28,7 +28,7 @@
       font-size: clamp(36px, 9vw, 52px);
       font-weight: 400;
       color: #12121C;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       line-height: 1.1;
     }
 
@@ -38,10 +38,9 @@
     }
 
     .header p {
-      font-size: 13px;
-      color: rgba(18,18,28,0.4);
-      font-weight: 300;
-      letter-spacing: 0.05em;
+      font-size: 15px;
+      color: rgba(18,18,28,0.5);
+      font-weight: 400;
     }
 
     .slots {
@@ -54,7 +53,7 @@
 
     .slot {
       background: #12121C;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
       padding: 22px 24px;
       cursor: pointer;
@@ -67,12 +66,12 @@
     }
 
     .slot:hover {
-      border-color: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.25);
       transform: translateY(-2px);
     }
 
     .slot.selected {
-      border-color: rgba(255,255,255,0.4);
+      border-color: rgba(255,255,255,0.5);
     }
 
     .stars {
@@ -98,39 +97,45 @@
       50% { opacity: 0.5; transform: scale(1.2); }
     }
 
-    .slot-left { display: flex; flex-direction: column; gap: 4px; position: relative; z-index: 1; }
+    .slot-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      z-index: 1;
+    }
 
     .slot-day {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 500;
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.45);
       text-transform: uppercase;
       letter-spacing: 0.12em;
     }
 
     .slot-date {
       font-family: 'Playfair Display', serif;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 400;
       color: white;
     }
 
     .slot-time {
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-      font-weight: 300;
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      font-weight: 400;
     }
 
     .slot-check {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
       color: transparent;
-      font-size: 12px;
+      font-size: 14px;
       transition: all 0.2s;
       flex-shrink: 0;
       position: relative;
@@ -152,17 +157,17 @@
       width: 100%;
       padding: 18px;
       border-radius: 50px;
-      border: 1px solid rgba(18,18,28,0.2);
+      border: 1px solid rgba(18,18,28,0.25);
       background: #12121C;
-      color: rgba(255,255,255,0.3);
-      font-size: 13px;
-      font-weight: 400;
+      color: rgba(255,255,255,0.35);
+      font-size: 14px;
+      font-weight: 500;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
-      opacity: 0.4;
+      opacity: 0.5;
       pointer-events: none;
     }
 
