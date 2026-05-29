@@ -792,6 +792,7 @@ async function loadPages() {
   let query = sb.from('date_pages')
     .select('*')
     .is('deleted_at', null)
+    .eq('creator_id', currentUser.id)
     .order('created_at', { ascending: false });
 
   // RLS will enforce creator_id filter for logged-in users
