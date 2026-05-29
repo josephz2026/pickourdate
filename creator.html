@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Create a Date Plan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; overflow-x: hidden; }
@@ -48,10 +48,7 @@
       z-index: 1;
     }
 
-    .page-title em {
-      font-style: italic;
-      color: rgba(255,255,255,0.4);
-    }
+    .page-title em { font-style: italic; color: rgba(255,255,255,0.4); }
 
     .page-sub {
       font-size: 13px;
@@ -77,9 +74,7 @@
       margin-bottom: 16px;
     }
 
-    .field {
-      margin-bottom: 14px;
-    }
+    .field { margin-bottom: 14px; }
 
     .field label {
       display: block;
@@ -87,11 +82,9 @@
       color: rgba(255,255,255,0.35);
       margin-bottom: 6px;
       font-weight: 400;
-      letter-spacing: 0.03em;
     }
 
-    .field input,
-    .field textarea {
+    .field input, .field textarea {
       width: 100%;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
@@ -105,22 +98,16 @@
       transition: border-color 0.2s;
     }
 
-    .field input:focus,
-    .field textarea:focus { border-color: rgba(255,255,255,0.3); }
-
-    .field input::placeholder,
-    .field textarea::placeholder { color: rgba(255,255,255,0.15); }
-
+    .field input:focus, .field textarea:focus { border-color: rgba(255,255,255,0.3); }
+    .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.15); }
     .field textarea { resize: none; height: 80px; }
 
-    /* Venue blocks */
     .venue-block {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 14px;
       padding: 16px;
       margin-bottom: 10px;
-      transition: border-color 0.2s;
     }
 
     .venue-block.filled { border-color: rgba(255,255,255,0.2); }
@@ -145,35 +132,18 @@
       font-weight: 300;
       outline: none;
       margin-bottom: 10px;
-      transition: border-color 0.2s;
     }
 
-    .venue-block input:focus { border-color: rgba(255,255,255,0.3); }
     .venue-block input::placeholder { color: rgba(255,255,255,0.15); }
 
     .venue-filled { display: none; }
     .venue-block.filled .venue-filled { display: block; }
     .venue-block.filled .venue-input-area { display: none; }
 
-    .venue-name-display {
-      font-size: 15px;
-      font-weight: 500;
-      color: white;
-      margin-bottom: 3px;
-    }
+    .venue-name-display { font-size: 15px; font-weight: 500; color: white; margin-bottom: 3px; }
+    .venue-meta { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 12px; }
 
-    .venue-meta {
-      font-size: 12px;
-      color: rgba(255,255,255,0.3);
-      margin-bottom: 12px;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 
     .tag-pill {
       font-size: 11px;
@@ -187,10 +157,7 @@
       transition: all 0.15s;
     }
 
-    .tag-pill.active {
-      border-color: rgba(255,255,255,0.5);
-      color: white;
-    }
+    .tag-pill.active { border-color: rgba(255,255,255,0.5); color: white; }
 
     .remove-btn {
       font-size: 11px;
@@ -200,7 +167,6 @@
       cursor: pointer;
       font-family: 'DM Sans', sans-serif;
       padding: 0;
-      transition: color 0.2s;
     }
 
     .remove-btn:hover { color: rgba(255,80,80,0.8); }
@@ -213,17 +179,13 @@
       background: transparent;
       color: rgba(255,255,255,0.25);
       font-size: 12px;
-      font-weight: 400;
       letter-spacing: 0.08em;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .ghost-btn:hover {
-      border-color: rgba(255,255,255,0.3);
-      color: rgba(255,255,255,0.5);
-    }
+    .ghost-btn:hover { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); }
 
     .fetch-btn {
       width: 100%;
@@ -239,14 +201,9 @@
       transition: all 0.2s;
     }
 
-    .fetch-btn:hover {
-      border-color: rgba(255,255,255,0.35);
-      color: rgba(255,255,255,0.7);
-    }
-
+    .fetch-btn:hover { border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.7); }
     .fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* Custom date/time slot */
     .slot-block {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
@@ -269,7 +226,6 @@
       color: rgba(255,255,255,0.2);
     }
 
-    /* Month navigation */
     .month-nav {
       display: flex;
       align-items: center;
@@ -277,11 +233,7 @@
       margin-bottom: 12px;
     }
 
-    .month-label {
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      font-weight: 500;
-    }
+    .month-label { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500; }
 
     .month-arrow {
       background: none;
@@ -296,7 +248,6 @@
 
     .month-arrow:hover { color: white; }
 
-    /* Calendar grid */
     .cal-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -309,7 +260,6 @@
       color: rgba(255,255,255,0.2);
       text-align: center;
       padding: 4px 0;
-      letter-spacing: 0.05em;
     }
 
     .cal-day {
@@ -328,12 +278,7 @@
     .cal-day.empty { cursor: default; }
     .cal-day.past { opacity: 0.2; cursor: not-allowed; }
 
-    /* Time picker */
-    .time-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    .time-row { display: flex; gap: 8px; align-items: center; }
 
     .time-select {
       flex: 1;
@@ -350,14 +295,8 @@
       text-align: center;
     }
 
-    .time-select:focus { border-color: rgba(255,255,255,0.3); }
-
     .time-select option { background: #1a1a2e; color: white; }
-
-    .time-colon {
-      color: rgba(255,255,255,0.3);
-      font-size: 16px;
-    }
+    .time-colon { color: rgba(255,255,255,0.3); font-size: 16px; }
 
     .slot-selected-display {
       font-size: 13px;
@@ -371,7 +310,6 @@
 
     .slot-selected-display.show { display: block; }
 
-    /* Toggle */
     .toggle-row {
       display: flex;
       align-items: center;
@@ -381,20 +319,9 @@
     }
 
     .toggle-row:last-of-type { border-bottom: none; }
-
     .toggle-info { flex: 1; }
-
-    .toggle-title {
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 2px;
-      font-weight: 400;
-    }
-
-    .toggle-desc {
-      font-size: 11px;
-      color: rgba(255,255,255,0.2);
-    }
+    .toggle-title { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+    .toggle-desc { font-size: 11px; color: rgba(255,255,255,0.2); }
 
     .toggle-track {
       position: relative;
@@ -423,7 +350,6 @@
 
     .toggle-track.on .toggle-thumb { transform: translateX(16px); }
 
-    /* Generate button */
     .generate-btn {
       width: 100%;
       padding: 18px;
@@ -443,14 +369,9 @@
       margin-top: 8px;
     }
 
-    .generate-btn:hover {
-      border-color: rgba(255,255,255,0.6);
-      background: rgba(255,255,255,0.05);
-    }
-
+    .generate-btn:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); }
     .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* Link box */
     .link-box {
       display: none;
       background: rgba(255,255,255,0.04);
@@ -498,10 +419,7 @@
       transition: all 0.2s;
     }
 
-    .copy-btn:hover {
-      border-color: rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.05);
-    }
+    .copy-btn:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
 
     .page-footer {
       text-align: center;
@@ -516,18 +434,16 @@
   </style>
 </head>
 <body>
-
   <div class="card">
     <div class="glow"></div>
-<div id="auth-bar" style="text-align:right;margin-bottom:20px;position:relative;z-index:1;">
-      <button onclick="goToDashboard()" style="font-size:12px;color:rgba(255,255,255,0.35);background:none;border:1px solid rgba(255,255,255,0.15);border-radius:50px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s" 
-        onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.35)'"
-        id="dashboard-btn">My dates →</button>
+
+    <div style="text-align:right;margin-bottom:20px;position:relative;z-index:1;">
+      <button onclick="window.location.href='/dashboard'" style="font-size:12px;color:rgba(255,255,255,0.35);background:none;border:1px solid rgba(255,255,255,0.15);border-radius:50px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;">My dates →</button>
     </div>
+
     <h1 class="page-title">Plan a <em>date.</em></h1>
     <p class="page-sub">Fill this in and send her the link.</p>
 
-    <!-- Her details -->
     <div class="section">
       <div class="section-label">Her details</div>
       <div class="field">
@@ -540,24 +456,20 @@
       </div>
     </div>
 
-    <!-- Venues -->
     <div class="section">
       <div class="section-label">Venues</div>
       <div id="venues-container"></div>
       <button class="ghost-btn" onclick="addVenue()" id="add-venue-btn">+ add a venue</button>
     </div>
 
-    <!-- Time slots -->
     <div class="section">
       <div class="section-label">Time slots</div>
       <div id="slots-container"></div>
       <button class="ghost-btn" onclick="addSlot()">+ add a time slot</button>
     </div>
 
-    <!-- Settings -->
     <div class="section">
       <div class="section-label">Settings</div>
-
       <div class="toggle-row">
         <div class="toggle-info">
           <div class="toggle-title">Allow "suggest a different place"</div>
@@ -567,7 +479,6 @@
           <div class="toggle-thumb"></div>
         </div>
       </div>
-
       <div class="toggle-row">
         <div class="toggle-info">
           <div class="toggle-title">Notify me when she responds</div>
@@ -577,7 +488,6 @@
           <div class="toggle-thumb"></div>
         </div>
       </div>
-
       <div id="email-row" style="margin-top:14px">
         <div class="field">
           <label>Your email</label>
@@ -586,9 +496,7 @@
       </div>
     </div>
 
-    <button class="generate-btn" id="generate-btn" onclick="generateLink()">
-      Generate link
-    </button>
+    <button class="generate-btn" id="generate-btn" onclick="generateLink()">Generate link</button>
 
     <div class="link-box" id="link-box">
       <div class="link-label">Your date link is ready</div>
@@ -599,19 +507,19 @@
     <p class="page-footer">pickourdate.co</p>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase.js"></script>
   <script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const _supabase = window.supabase.createClient(
-    'https://jjzscluiudnpzrpfmfje.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqenNjbHVpdWRucHpycGZtZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTU5MDYsImV4cCI6MjA5NTU3MTkwNn0.Gibxci4jo9k5a9khF-kF4SxEPCq57umNr4FUvZBLzh0'
-  );
-  let currentUserId = null;
-  _supabase.auth.getSession().then(({ data: { session } }) => {
-    if (session) currentUserId = session.user.id;
-  });
-</script>
+    const _supabase = window.supabase.createClient(
+      'https://jjzscluiudnpzrpfmfje.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqenNjbHVpdWRucHpycGZtZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTU5MDYsImV4cCI6MjA5NTU3MTkwNn0.Gibxci4jo9k5a9khF-kF4SxEPCq57umNr4FUvZBLzh0'
+    );
+
+    let currentUserId = null;
+    _supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) currentUserId = session.user.id;
+    });
+
     const CATEGORIES = ['Drinks','Dinner','Rooftop','Coffee','Park','Concert','Activity'];
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -620,7 +528,6 @@
     let slots = [];
     let generatedLink = '';
 
-    // ── TOGGLES ──
     function toggleSwitch(id) {
       const track = document.getElementById(id);
       track.classList.toggle('on');
@@ -630,12 +537,10 @@
       }
     }
 
-    // ── VENUES ──
     function addVenue() {
       const index = venues.length;
       if (index >= 4) return;
       venues.push({ name: '', tag: 'Dinner', address: '', maps: '', rating: 4.5, reviews: '500+' });
-
       const container = document.getElementById('venues-container');
       const block = document.createElement('div');
       block.className = 'venue-block';
@@ -660,20 +565,16 @@
     async function fillVenue(index) {
       const input = document.getElementById(`venue-input-${index}`).value.trim();
       if (!input) { alert('Please enter a venue name or Google Maps link.'); return; }
-
       const btn = document.querySelector(`#venue-block-${index} .fetch-btn`);
       btn.textContent = 'Looking up...';
       btn.disabled = true;
-
       try {
         const response = await fetch('/api/places', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ input })
         });
-
         const place = await response.json();
-
         venues[index] = {
           name: place.name,
           tag: 'Dinner',
@@ -682,11 +583,8 @@
           rating: place.rating,
           reviews: place.reviews
         };
-
         showVenueFilled(index);
-
       } catch (err) {
-        console.error(err);
         venues[index] = {
           name: input.startsWith('http') ? 'Venue ' + (index + 1) : input,
           tag: 'Dinner',
@@ -725,15 +623,12 @@
       document.getElementById('add-venue-btn').style.display = 'block';
     }
 
-    // ── TIME SLOTS ──
     function addSlot() {
       const index = slots.length;
-      slots.push({ day: '', date: '', time: '', hour: '7', minute: '00', ampm: 'PM', calYear: null, calMonth: null });
-
+      slots.push({ day: '', date: '', time: '', calYear: null, calMonth: null });
       const now = new Date();
       slots[index].calYear = now.getFullYear();
       slots[index].calMonth = now.getMonth();
-
       const container = document.getElementById('slots-container');
       const block = document.createElement('div');
       block.className = 'slot-block';
@@ -751,15 +646,11 @@
         <div class="cal-grid" id="cal-${index}"></div>
         <div class="time-row">
           <select class="time-select" id="hour-${index}" onchange="updateTime(${index})">
-            ${[1,2,3,4,5,6,7,8,9,10,11,12].map(h =>
-              `<option value="${h}" ${h===7?'selected':''}>${h}</option>`
-            ).join('')}
+            ${[1,2,3,4,5,6,7,8,9,10,11,12].map(h => `<option value="${h}" ${h===7?'selected':''}>${h}</option>`).join('')}
           </select>
           <span class="time-colon">:</span>
           <select class="time-select" id="min-${index}" onchange="updateTime(${index})">
-            ${['00','15','30','45'].map(m =>
-              `<option value="${m}">${m}</option>`
-            ).join('')}
+            ${['00','15','30','45'].map(m => `<option value="${m}">${m}</option>`).join('')}
           </select>
           <select class="time-select" id="ampm-${index}" onchange="updateTime(${index})">
             <option value="AM">AM</option>
@@ -776,26 +667,18 @@
       const s = slots[index];
       const year = s.calYear;
       const month = s.calMonth;
-      const label = document.getElementById(`month-label-${index}`);
-      label.textContent = `${MONTHS[month]} ${year}`;
-
+      document.getElementById(`month-label-${index}`).textContent = `${MONTHS[month]} ${year}`;
       const cal = document.getElementById(`cal-${index}`);
       cal.innerHTML = DAYS.map(d => `<div class="cal-day-label">${d}</div>`).join('');
-
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const today = new Date();
-
-      for (let i = 0; i < firstDay; i++) {
-        cal.innerHTML += `<div class="cal-day empty"></div>`;
-      }
-
+      for (let i = 0; i < firstDay; i++) cal.innerHTML += `<div class="cal-day empty"></div>`;
       for (let d = 1; d <= daysInMonth; d++) {
         const date = new Date(year, month, d);
         const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
         const isSelected = s.calDay === d;
-        cal.innerHTML += `<div class="cal-day ${isPast ? 'past' : ''} ${isSelected ? 'selected' : ''}"
-          onclick="${isPast ? '' : `selectDay(${index}, ${d})`}">${d}</div>`;
+        cal.innerHTML += `<div class="cal-day ${isPast ? 'past' : ''} ${isSelected ? 'selected' : ''}" onclick="${isPast ? '' : `selectDay(${index}, ${d})`}">${d}</div>`;
       }
     }
 
@@ -806,47 +689,29 @@
     }
 
     function prevMonth(index) {
-      if (slots[index].calMonth === 0) {
-        slots[index].calMonth = 11;
-        slots[index].calYear--;
-      } else {
-        slots[index].calMonth--;
-      }
+      if (slots[index].calMonth === 0) { slots[index].calMonth = 11; slots[index].calYear--; }
+      else slots[index].calMonth--;
       renderCalendar(index);
     }
 
     function nextMonth(index) {
-      if (slots[index].calMonth === 11) {
-        slots[index].calMonth = 0;
-        slots[index].calYear++;
-      } else {
-        slots[index].calMonth++;
-      }
+      if (slots[index].calMonth === 11) { slots[index].calMonth = 0; slots[index].calYear++; }
+      else slots[index].calMonth++;
       renderCalendar(index);
     }
 
-    function updateTime(index) {
-      updateSlotDisplay(index);
-    }
+    function updateTime(index) { updateSlotDisplay(index); }
 
     function updateSlotDisplay(index) {
       const s = slots[index];
       if (!s.calDay) return;
-
       const hour = document.getElementById(`hour-${index}`).value;
       const min = document.getElementById(`min-${index}`).value;
       const ampm = document.getElementById(`ampm-${index}`).value;
       const date = new Date(s.calYear, s.calMonth, s.calDay);
       const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][date.getDay()];
       const monthName = MONTHS[s.calMonth];
-
-      slots[index] = {
-        ...s,
-        day: dayName,
-        date: `${monthName} ${s.calDay}`,
-        time: `${hour}:${min} ${ampm}`
-      };
-
+      slots[index] = { ...s, day: dayName, date: `${monthName} ${s.calDay}`, time: `${hour}:${min} ${ampm}` };
       const display = document.getElementById(`slot-display-${index}`);
       display.textContent = `${dayName}, ${monthName} ${s.calDay} at ${hour}:${min} ${ampm}`;
       display.classList.add('show');
@@ -857,19 +722,15 @@
       document.getElementById(`slot-block-${index}`).remove();
     }
 
-    // ── GENERATE ──
     function generateSlug(name) {
-      const random = Math.random().toString(36).substring(2, 7);
-      return `${name.toLowerCase().replace(/\s+/g, '')}-${random}`;
+      return `${name.toLowerCase().replace(/\s+/g, '')}-${Math.random().toString(36).substring(2, 7)}`;
     }
 
     async function generateLink() {
       const guestName = document.getElementById('guest-name').value.trim();
       if (!guestName) { alert('Please enter her name.'); return; }
-
       const filledVenues = venues.filter(v => v && v.name);
       if (filledVenues.length === 0) { alert('Please add at least one venue.'); return; }
-
       const filledSlots = slots.filter(s => s && s.date);
       if (filledSlots.length === 0) { alert('Please add at least one time slot.'); return; }
 
@@ -899,9 +760,7 @@
         document.getElementById('link-url').textContent = generatedLink;
         document.getElementById('link-box').classList.add('show');
         btn.textContent = 'Link created';
-
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-
       } catch (err) {
         console.error(err);
         alert('Something went wrong. Please try again.');
@@ -916,12 +775,7 @@
       btn.textContent = 'Copied!';
       setTimeout(() => btn.textContent = 'Copy link', 2000);
     }
-function goToDashboard() {
-      window.location.href = '/dashboard';
-    }
 
-    addVenue();
-    addSlot();
     addVenue();
     addSlot();
   </script>
