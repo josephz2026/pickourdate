@@ -645,7 +645,7 @@ let editingId = null;
 async function signInGoogle() {
   await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.href }
+    options: { redirectTo: 'https://pickourdate.co/admin' }
   });
 }
 
