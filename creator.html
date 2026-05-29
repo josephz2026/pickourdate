@@ -761,7 +761,8 @@
           allow_escape: allowEscape,
           notify_email: notifyEmail || null,
           status: 'pending',
-          user_id: currentUserId || null
+          user_id: currentUserId || null,
+          creator_id: currentUserId || null
         });
 
         generatedLink = `https://pickourdate.co?id=${slug}`;
