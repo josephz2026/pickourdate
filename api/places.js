@@ -24,6 +24,7 @@ export default async function handler(req, res) {
       }
     );
     const data = await response.json();
+console.log('Places API response:', JSON.stringify(data));
     if (data.places && data.places.length > 0) {
       const places = data.places.slice(0, 5).map(place => ({
         name: place.displayName?.text || placeName,
