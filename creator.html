@@ -930,10 +930,28 @@
       btn.disabled = true;
       btn.textContent = 'Generating...';
 
-      try {
+try {
         const slug = generateSlug(guestName);
-        ALTER TABLE date_pages ADD COLUMN IF NOT EXISTS notify_on_view BOOLEAN DEFAULT true;
-ALTER TABLE date_pages ADD COLUMN IF NOT EXISTS notify_on_confirm BOOLEAN DEFAULT true;
+        const notifyEmail = document.getElementById('notify-email').value.trim();
+        const allowEscape = document.getElementById('escape-toggle').classList.contains('on');
+        const notifyOnView = document.getElementById('notify-viewed-toggle').classList.contains('on');
+        const notifyOnConfirm = document.getElementById('notify-confirmed-toggle').classList.contains('on');
+        await createDatePage({
+          slug,
+          guest_name: guestName,
+          sender_name: document.getElementById('sender-name').value.trim() || null,
+          personal_note: document.getElementById('personal-note').value.trim(),
+          venues: filledVenues,
+          time_slots: filledSlots,
+          date_mode: 'slots',
+          allow_escape: allowEscape,
+          notify_email: notifyEmail || null,
+          notify_on_view: notifyOnView,
+          notify_on_confirm: notifyOnConfirm,
+          status: 'pending',
+          user_id: currentUserId || null,
+          creator_id: currentUserId || null
+        });
         generatedLink = `https://pickourdate.co/${slug}`;
         document.getElementById('link-url').textContent = generatedLink;
         document.getElementById('link-box').classList.add('show');
