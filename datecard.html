@@ -279,58 +279,85 @@
 
   <script src="supabase.js"></script>
   <script>
-    let venue = JSON.parse(localStorage.getItem('venue') || '{}');
-    let slot = JSON.parse(localStorage.getItem('slot') || '{}');
-    const slug = localStorage.getItem('slug') || window.location.pathname.replace(/^\//, '');
+    let venue = {};
+    let slot = {};
+    const slug = window.location.pathname.replace(/^\//, '') || localStorage.getItem('slug');
 
     async function loadPage() {
-      let v = venue;
-      let s = slot;
+      if (!slug || slug === 'datecard.html') {
+        // fallback to localStorage
+        venue = JSON.parse(localStorage.getItem('venue') || '{}');
+        slot = JSON.parse(localStorage.getItem('slot') || '{}');
+        renderPage();
+        return;
+      }
 
-      if (slug) {
-        try {
-          const page = await getDatePage(slug);
-          if (page) {
-            if (page.selected_venue) {
-              v = typeof page.selected_venue === 'string'
-                ? JSON.parse(page.selected_venue)
-                : page.selected_venue;
-            }
-            if (page.selected_slot) {
-              s = typeof page.selected_slot === 'string'
-                ? JSON.parse(page.selected_slot)
-                : page.selected_slot;
-            }
-            if (page.guest_name) {
-              document.getElementById('subtitle').textContent =
-                `Can't wait, ${page.guest_name}. See you then.`;
-            }
-            venue = v;
-            slot = s;
+      try {
+        const page = await getDatePage(slug);
+        if (page) {
+          if (page.selected_venue) {
+            venue = typeof page.selected_venue === 'string'
+              ? JSON.parse(page.selected_venue)
+              : page.selected_venue;
           }
-        } catch (err) { console.error(err); }
+          if (page.selected_slot) {
+            slot = typeof page.selected_slot === 'string'
+              ? JSON.parse(page.selected_slot)
+              : page.selected_slot;
+          }
+          if (page.guest_name) {
+            document.getElementById('subtitle').textContent =
+              `Can't wait, ${page.guest_name}. See you then.`;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        venue = JSON.parse(localStorage.getItem('venue') || '{}');
+        slot = JSON.parse(localStorage.getItem('slot') || '{}');
       }
+      renderPage();
+    }
 
-      if (v.name) {
+    function renderPage() {
+      if (venue.name) {
         document.getElementById('summary-venue').innerHTML =
-          `${v.name} <span class="summary-tag">${v.tag || ''}</span>`;
-        document.getElementById('maps-btn').href = v.maps || 'https://maps.google.com';
+          `${venue.name} <span class="summary-tag">${venue.tag || ''}</span>`;
+        document.getElementById('maps-btn').href = venue.maps || `https://maps.google.com/?q=${encodeURIComponent(venue.address || venue.name)}`;
       }
-
-      if (s.date) {
-        document.getElementById('summary-date').textContent = `${s.day}, ${s.date}`;
-        document.getElementById('summary-time').textContent = s.time;
+      if (slot.date) {
+        document.getElementById('summary-date').textContent = `${slot.day}, ${slot.date}`;
+        document.getElementById('summary-time').textContent = slot.time;
       }
     }
 
+    function parseSlotToDate() {
+      // slot.date looks like "June 2, 2026" or "June 2"
+      // slot.time looks like "6:00 PM"
+      try {
+        const dateStr = slot.date || '';
+        const timeStr = slot.time || '12:00 PM';
+        const fullStr = `${dateStr} ${new Date().getFullYear()} ${timeStr}`;
+        const d = new Date(fullStr);
+        if (isNaN(d)) return null;
+        return d;
+      } catch { return null; }
+    }
+
+    function toICSDate(d) {
+      return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    }
+
     function addToGoogleCalendar() {
-      const venueName = (typeof venue === 'object' && venue.name) ? venue.name : 'Our Date';
-      const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
-      const text = encodeURIComponent(`Date at ${venueName}`);
-      const location = encodeURIComponent(address);
-      const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&location=${location}`;
+      const venueName = venue.name || 'Our Date';
+      const address = venue.address || '';
+      const start = parseSlotToDate();
+      const end = start ? new Date(start.getTime() + 7200000) : null;
+      let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Date at ' + venueName)}&location=${encodeURIComponent(address)}`;
+      if (start && !isNaN(start)) {
+        url += `&dates=${toICSDate(start)}/${toICSDate(end)}`;
+      }
       const a = document.createElement('a');
-      a.href = calUrl;
+      a.href = url;
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
       document.body.appendChild(a);
@@ -339,8 +366,10 @@
     }
 
     function addToAppleCalendar() {
-      const venueName = (typeof venue === 'object' && venue.name) ? venue.name : 'Our Date';
-      const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
+      const venueName = venue.name || 'Our Date';
+      const address = venue.address || '';
+      const start = parseSlotToDate() || new Date();
+      const end = new Date(start.getTime() + 7200000);
       const ics = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
@@ -348,8 +377,8 @@
         'BEGIN:VEVENT',
         `SUMMARY:Date at ${venueName}`,
         `LOCATION:${address}`,
-        `DTSTART:${new Date().toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,
-        `DTEND:${new Date(Date.now()+7200000).toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,
+        `DTSTART:${toICSDate(start)}`,
+        `DTEND:${toICSDate(end)}`,
         `DESCRIPTION:Your date at ${venueName}`,
         'END:VEVENT',
         'END:VCALENDAR'
