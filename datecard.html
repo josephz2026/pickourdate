@@ -290,8 +290,7 @@
       if (slug) {
         try {
           const page = await getDatePage(slug);
-        if (page) {
-            // Always prefer database data over localStorage
+          if (page) {
             if (page.selected_venue) {
               v = typeof page.selected_venue === 'string'
                 ? JSON.parse(page.selected_venue)
@@ -324,7 +323,7 @@
       }
     }
 
-   function addToGoogleCalendar() {
+    function addToGoogleCalendar() {
       const venueName = (typeof venue === 'object' && venue.name) ? venue.name : 'Our Date';
       const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
       const text = encodeURIComponent(`Date at ${venueName}`);
@@ -337,10 +336,9 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      );
     }
 
-  function addToAppleCalendar() {
+    function addToAppleCalendar() {
       const venueName = (typeof venue === 'object' && venue.name) ? venue.name : 'Our Date';
       const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
       const ics = [
