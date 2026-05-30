@@ -578,10 +578,41 @@
       clearTimeout(venueTimers[index]);
       const suggestionsEl = document.getElementById(`venue-suggestions-${index}`);
       if (input.length < 2) { suggestionsEl.innerHTML = ''; return; }
+      if (input.startsWith('http')) { fetchFromLink(index, input); return; }
       suggestionsEl.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0">Searching…</div>`;
       venueTimers[index] = setTimeout(() => fetchSuggestions(index, input), 350);
     }
 
+    async function fetchFromLink(index, url) {
+      const suggestionsEl = document.getElementById(`venue-suggestions-${index}`);
+      suggestionsEl.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0">Loading from link…</div>`;
+      try {
+        const response = await fetch('/api/places', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input: url })
+        });
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          const place = data.results[0];
+          venues[index] = {
+            name: place.name,
+            tag: venues[index]?.tag || 'Dinner',
+            address: place.address,
+            maps: place.maps,
+            rating: place.rating,
+            reviews: place.reviews
+          };
+          suggestionsEl.innerHTML = '';
+          showVenueFilled(index);
+        } else {
+          suggestionsEl.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0">Couldn't read link — <span style="cursor:pointer;text-decoration:underline" onclick="showManualEntry(${index})">add manually</span></div>`;
+        }
+      } catch (err) {
+        suggestionsEl.innerHTML = '';
+      }
+    }
+    
     async function fetchSuggestions(index, input) {
       const suggestionsEl = document.getElementById(`venue-suggestions-${index}`);
       try {
