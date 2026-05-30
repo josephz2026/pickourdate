@@ -216,8 +216,10 @@
           if (venue.name) {
             document.getElementById('dc-venue').innerHTML =
               venue.name + ' <span class="summary-tag">' + (venue.tag || '') + '</span>';
-            document.getElementById('dc-maps-btn').href =
-              venue.maps || ('https://maps.google.com/?q=' + encodeURIComponent(venue.address || venue.name));
+            var mapsUrl = venue.address 
+              ? 'https://www.google.com/maps/search/' + encodeURIComponent(venue.name + ' ' + venue.address)
+              : (venue.maps || 'https://maps.google.com');
+            document.getElementById('dc-maps-btn').href = mapsUrl;
           }
           if (slot.date) {
             document.getElementById('dc-date').textContent = slot.day + ', ' + slot.date;
