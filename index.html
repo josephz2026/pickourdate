@@ -309,8 +309,12 @@ console.log('path:', rawPath, 'slug:', slug);
             return;
           }
 
+          const senderLine = page.sender_name 
+            ? `<p class="date-label">a date planned by ${page.sender_name}</p>`
+            : `<p class="date-label">you have a date proposal</p>`;
+
           document.getElementById('date-inner').innerHTML = `
-          <p class="date-label">you have a date proposal</p>
+          ${senderLine}
           <h1 class="date-hero fade-up">
             Hey,
             <span class="name">${page.guest_name}.</span>
