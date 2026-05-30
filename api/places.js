@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       if (match) placeName = decodeURIComponent(match[1].replace(/\+/g, ' '));
     }
     const apiKey = process.env.GOOGLE_API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(placeName)}&fields=name,rating,user_ratings_total,formatted_address,place_id&key=${apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(placeName)}&key=${apiKey}`;
     const response = await fetch(url);
     const data = await response.json();
     if (data.results && data.results.length > 0) {
