@@ -595,6 +595,7 @@
         const data = await response.json();
         if (data.results && data.results.length > 0) {
           const place = data.results[0];
+          document.getElementById(`venue-input-${index}`).value = place.name;
           venues[index] = {
             name: place.name,
             tag: venues[index]?.tag || 'Dinner',
@@ -630,7 +631,7 @@
             margin-top:6px;
             overflow:hidden;
           ">${data.suggestions.map((s, i) => `
-            <div onclick="selectSuggestion(${index}, '${s.placeId}', '${s.name.replace(/'/g, "\\'")}', '${s.address.replace(/'/g, "\\'")}'')" style="
+            <div onclick="selectSuggestion(${index}, '${s.placeId}')" data-name="${s.name.replace(/"/g, '&quot;')}" data-address="${s.address.replace(/"/g, '&quot;')}" style="
               padding:12px 16px;
               cursor:pointer;
               border-bottom:1px solid rgba(255,255,255,0.07);
@@ -648,7 +649,10 @@
       }
     }
 
-    async function selectSuggestion(index, placeId, name, address) {
+    async function selectSuggestion(index, placeId) {
+      const el = event.currentTarget;
+      const name = el.dataset.name;
+      const address = el.dataset.address;
       const suggestionsEl = document.getElementById(`venue-suggestions-${index}`);
       suggestionsEl.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0">Loading details…</div>`;
       document.getElementById(`venue-input-${index}`).value = name;
