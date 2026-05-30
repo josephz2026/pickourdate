@@ -15,10 +15,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': apiKey,
         },
-        body: JSON.stringify({
-          input,
-          includedPrimaryTypes: ['restaurant', 'bar', 'cafe', 'night_club', 'movie_theater', 'park', 'museum', 'tourist_attraction']
-        })
+       body: JSON.stringify({ input })
       }
     );
     const data = await response.json();
