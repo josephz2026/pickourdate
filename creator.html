@@ -475,12 +475,12 @@
       <button class="ghost-btn" onclick="addSlot()">+ add a time slot</button>
     </div>
 
-    <div class="section">
+   <div class="section">
       <div class="section-label">Settings</div>
       <div class="toggle-row">
         <div class="toggle-info">
           <div class="toggle-title">Allow "suggest a different place"</div>
-          <div class="toggle-desc">receiver can propose their own idea</div>
+          <div class="toggle-desc">She can propose her own idea</div>
         </div>
         <div class="toggle-track" id="escape-toggle" onclick="toggleSwitch('escape-toggle')">
           <div class="toggle-thumb"></div>
@@ -488,10 +488,19 @@
       </div>
       <div class="toggle-row">
         <div class="toggle-info">
-          <div class="toggle-title">Notify me when they responds</div>
-          <div class="toggle-desc">Get an email when they confirms</div>
+          <div class="toggle-title">Notify me when she opens</div>
+          <div class="toggle-desc">Get an email when she views the link</div>
         </div>
-        <div class="toggle-track on" id="notify-toggle" onclick="toggleSwitch('notify-toggle')">
+        <div class="toggle-track on" id="notify-viewed-toggle" onclick="toggleSwitch('notify-viewed-toggle')">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">Notify me when she confirms</div>
+          <div class="toggle-desc">Get an email when she picks a venue</div>
+        </div>
+        <div class="toggle-track on" id="notify-confirmed-toggle" onclick="toggleSwitch('notify-confirmed-toggle')">
           <div class="toggle-thumb"></div>
         </div>
       </div>
@@ -546,10 +555,10 @@
     function toggleSwitch(id) {
       const track = document.getElementById(id);
       track.classList.toggle('on');
-      if (id === 'notify-toggle') {
-        document.getElementById('email-row').style.display =
-          track.classList.contains('on') ? 'block' : 'none';
-      }
+      const notifyViewed = document.getElementById('notify-viewed-toggle');
+      const notifyConfirmed = document.getElementById('notify-confirmed-toggle');
+      const eitherOn = notifyViewed.classList.contains('on') || notifyConfirmed.classList.contains('on');
+      document.getElementById('email-row').style.display = eitherOn ? 'block' : 'none';
     }
 
     function addVenue() {
@@ -923,24 +932,8 @@
 
       try {
         const slug = generateSlug(guestName);
-        const notifyEmail = document.getElementById('notify-email').value.trim();
-        const allowEscape = document.getElementById('escape-toggle').classList.contains('on');
-
-        await createDatePage({
-          slug,
-          guest_name: guestName,
-          sender_name: document.getElementById('sender-name').value.trim() || null,
-          personal_note: document.getElementById('personal-note').value.trim(),
-          venues: filledVenues,
-          time_slots: filledSlots,
-          date_mode: 'slots',
-          allow_escape: allowEscape,
-          notify_email: notifyEmail || null,
-          status: 'pending',
-          user_id: currentUserId || null,
-          creator_id: currentUserId || null
-        });
-
+        ALTER TABLE date_pages ADD COLUMN IF NOT EXISTS notify_on_view BOOLEAN DEFAULT true;
+ALTER TABLE date_pages ADD COLUMN IF NOT EXISTS notify_on_confirm BOOLEAN DEFAULT true;
         generatedLink = `https://pickourdate.co/${slug}`;
         document.getElementById('link-url').textContent = generatedLink;
         document.getElementById('link-box').classList.add('show');
