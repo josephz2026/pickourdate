@@ -353,10 +353,7 @@
       ].join('\n');
       const blob = new Blob([ics], { type: 'text/calendar' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'date.ics';
-      a.click();
+      window.location.href = url;
     }
 
     function shareWithFriend() {
