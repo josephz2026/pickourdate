@@ -941,7 +941,7 @@
           creator_id: currentUserId || null
         });
 
-        generatedLink = `https://pickourdate.co?id=${slug}`;
+        generatedLink = `https://pickourdate.co/${slug}`;
         document.getElementById('link-url').textContent = generatedLink;
         document.getElementById('link-box').classList.add('show');
         btn.textContent = 'Link created';
