@@ -925,6 +925,7 @@
         await createDatePage({
           slug,
           guest_name: guestName,
+          sender_name: document.getElementById('sender-name').value.trim() || null,
           personal_note: document.getElementById('personal-note').value.trim(),
           venues: filledVenues,
           time_slots: filledSlots,
