@@ -323,7 +323,9 @@
 
       try {
         const page = await getDatePage(slug);
+        console.log('page:', page);
 
+        if (!page) {
         if (!page) {
           document.getElementById('date-inner').innerHTML = `
             <p class="date-label">pickourdate.co</p>
