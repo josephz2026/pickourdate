@@ -113,10 +113,10 @@
     .venue-block.filled { border-color: rgba(255,255,255,0.2); }
 
     .venue-number {
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
       margin-bottom: 10px;
     }
 
@@ -161,7 +161,7 @@
 
     .remove-btn {
       font-size: 11px;
-      color: rgba(255,80,80,0.4);
+      color: rgba(255,80,80,0.9);
       background: none;
       border: none;
       cursor: pointer;
@@ -169,7 +169,7 @@
       padding: 0;
     }
 
-    .remove-btn:hover { color: rgba(255,80,80,0.8); }
+    .remove-btn:hover { color: rgba(255,60,60); }
 
     .ghost-btn {
       width: 100%;
@@ -565,7 +565,7 @@
         <div class="venue-input-area">
           <input type="text" placeholder="Search for a venue or restaurant…" id="venue-input-${index}" oninput="handleVenueInput(${index})" autocomplete="off" />
           <div id="venue-suggestions-${index}" style="position:relative"></div>
-          <button class="fetch-btn" onclick="showManualEntry(${index})" style="margin-top:6px;opacity:0.6;font-size:12px">+ Add manually instead</button>
+          <button class="fetch-btn" onclick="showManualEntry(${index})" style="margin-top:6px;opacity:1;font-size:12px;color:rgba(255,255,255,0.9);border-color:rgba(255,255,255,0.5)">+ Add manually instead</button>
           <button class="remove-btn" onclick="removeVenue(${index})" style="margin-top:10px;display:block">Remove venue</button>
         </div>
         <div class="venue-filled" id="venue-filled-${index}">
