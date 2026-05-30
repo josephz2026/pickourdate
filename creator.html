@@ -574,7 +574,7 @@
       const input = document.getElementById(`venue-input-${index}`).value.trim();
       if (!input) { alert('Please enter a venue name or Google Maps link.'); return; }
       const btn = document.querySelector(`#venue-block-${index} .fetch-btn`);
-      btn.textContent = 'Looking up...';
+      btn.textContent = 'Searching...';
       btn.disabled = true;
       try {
         const response = await fetch('/api/places', {
@@ -582,30 +582,64 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ input })
         });
-        const place = await response.json();
-        venues[index] = {
-          name: place.name,
-          tag: 'Dinner',
-          address: place.address || 'New York, NY',
-          maps: place.maps,
-          rating: place.rating,
-          reviews: place.reviews
-        };
-        showVenueFilled(index);
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          showVenueDropdown(index, data.results);
+        } else {
+          alert('No results found. Try a different name or paste a Google Maps link.');
+        }
       } catch (err) {
-        venues[index] = {
-          name: input.startsWith('http') ? 'Venue ' + (index + 1) : input,
-          tag: 'Dinner',
-          address: 'New York, NY',
-          maps: input.startsWith('http') ? input : `https://maps.google.com/?q=${encodeURIComponent(input)}`,
-          rating: 4.5,
-          reviews: '500+'
-        };
-        showVenueFilled(index);
+        alert('Something went wrong. Please try again.');
       } finally {
         btn.textContent = 'Auto-fill from Maps';
         btn.disabled = false;
       }
+    }
+
+    function showVenueDropdown(index, results) {
+      const block = document.getElementById(`venue-block-${index}`);
+      let dropdown = document.getElementById(`venue-dropdown-${index}`);
+      if (dropdown) dropdown.remove();
+      dropdown = document.createElement('div');
+      dropdown.id = `venue-dropdown-${index}`;
+      dropdown.style.cssText = `
+        background: #1a1a2e;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        margin-top: 8px;
+        overflow: hidden;
+      `;
+      dropdown.innerHTML = results.map((place, i) => `
+        <div onclick="selectVenue(${index}, ${i})" style="
+          padding: 14px 16px;
+          cursor: pointer;
+          border-bottom: 1px solid rgba(255,255,255,0.07);
+          transition: background 0.15s;
+        " onmouseover="this.style.background='rgba(255,255,255,0.06)'"
+           onmouseout="this.style.background='transparent'">
+          <div style="color:white;font-size:14px;font-weight:500;margin-bottom:3px">${place.name}</div>
+          <div style="color:rgba(255,255,255,0.45);font-size:12px">${place.address}</div>
+          ${place.rating ? `<div style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:2px">${place.rating}★ · ${place.reviews} reviews</div>` : ''}
+        </div>
+      `).join('');
+      block.appendChild(dropdown);
+      block._dropdownResults = results;
+    }
+
+    function selectVenue(index, resultIndex) {
+      const block = document.getElementById(`venue-block-${index}`);
+      const place = block._dropdownResults[resultIndex];
+      venues[index] = {
+        name: place.name,
+        tag: venues[index]?.tag || 'Dinner',
+        address: place.address,
+        maps: place.maps,
+        rating: place.rating,
+        reviews: place.reviews
+      };
+      const dropdown = document.getElementById(`venue-dropdown-${index}`);
+      if (dropdown) dropdown.remove();
+      showVenueFilled(index);
     }
 
     function showVenueFilled(index) {
