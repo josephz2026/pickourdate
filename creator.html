@@ -52,7 +52,7 @@
 
     .page-sub {
       font-size: 13px;
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
       margin-bottom: 40px;
       font-weight: 300;
       position: relative;
@@ -87,7 +87,7 @@
     .field input, .field textarea {
       width: 100%;
       background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.35);
       border-radius: 12px;
       padding: 13px 16px;
       color: white;
@@ -99,7 +99,7 @@
     }
 
     .field input:focus, .field textarea:focus { border-color: rgba(255,255,255,0.3); }
-    .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.15); }
+    .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.45); }
     .field textarea { resize: none; height: 80px; }
 
     .venue-block {
@@ -123,7 +123,7 @@
     .venue-block input {
       width: 100%;
       background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.35);
       border-radius: 10px;
       padding: 11px 14px;
       color: white;
@@ -134,7 +134,7 @@
       margin-bottom: 10px;
     }
 
-    .venue-block input::placeholder { color: rgba(255,255,255,0.15); }
+    .venue-block input::placeholder { color: rgba(255,255,255,0.45); }
 
     .venue-filled { display: none; }
     .venue-block.filled .venue-filled { display: block; }
@@ -175,7 +175,7 @@
       width: 100%;
       padding: 12px;
       border-radius: 50px;
-      border: 1px dashed rgba(255,255,255,0.15);
+      border: 1px dashed rgba(255,255,255,0.45);
       background: transparent;
       color: rgba(255,255,255,0.25);
       font-size: 12px;
@@ -283,7 +283,7 @@
     .time-select {
       flex: 1;
       background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.35);
       border-radius: 10px;
       padding: 10px 12px;
       color: white;
@@ -327,7 +327,7 @@
       position: relative;
       width: 36px;
       height: 20px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.35);
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
@@ -375,7 +375,7 @@
     .link-box {
       display: none;
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.45);
       border-radius: 16px;
       padding: 24px;
       text-align: center;
@@ -425,7 +425,7 @@
       text-align: center;
       margin-top: 24px;
       font-size: 10px;
-      color: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.35);
       letter-spacing: 0.15em;
       text-transform: uppercase;
       position: relative;
@@ -438,7 +438,7 @@
     <div class="glow"></div>
 
     <div style="text-align:right;margin-bottom:20px;position:relative;z-index:1;">
-      <button onclick="window.location.href='/dashboard'" style="font-size:12px;color:rgba(255,255,255,0.35);background:none;border:1px solid rgba(255,255,255,0.15);border-radius:50px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;">My dates →</button>
+      <button onclick="window.location.href='/dashboard'" style="font-size:12px;color:rgba(255,255,255,0.35);background:none;border:1px solid rgba(255,255,255,0.35);border-radius:50px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;">My dates →</button>
     </div>
 
     <h1 class="page-title">Plan a <em>date.</em></h1>
@@ -454,11 +454,11 @@
 
       <div class="section-label">receiver details</div>
       <div class="field">
-        <label>receiver first name</label>
+        <label>Receiver first name</label>
         <input type="text" id="guest-name" placeholder="Sara" />
       </div>
       <div class="field">
-        <label>Personal note <span style="opacity:0.5">(optional)</span></label>
+        <label>Add Personal note <span style="opacity:0.5">(optional)</span></label>
         <textarea id="personal-note" placeholder="Thought you should have a say in this one."></textarea>
       </div>
     </div>
@@ -488,8 +488,8 @@
       </div>
       <div class="toggle-row">
         <div class="toggle-info">
-          <div class="toggle-title">Notify me when she responds</div>
-          <div class="toggle-desc">Get an email when she confirms</div>
+          <div class="toggle-title">Notify me when they responds</div>
+          <div class="toggle-desc">Get an email when they confirms</div>
         </div>
         <div class="toggle-track on" id="notify-toggle" onclick="toggleSwitch('notify-toggle')">
           <div class="toggle-thumb"></div>
@@ -634,7 +634,7 @@
         if (data.suggestions && data.suggestions.length > 0) {
           suggestionsEl.innerHTML = `<div style="
             background:#1a1a2e;
-            border:1px solid rgba(255,255,255,0.15);
+            border:1px solid rgba(255,255,255,0.45);
             border-radius:12px;
             margin-top:6px;
             overflow:hidden;
@@ -703,7 +703,7 @@
       dropdown.id = `venue-dropdown-${index}`;
       dropdown.style.cssText = `
         background: #1a1a2e;
-        border: 1px solid rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.45);
         border-radius: 12px;
         margin-top: 8px;
         overflow: hidden;
@@ -749,17 +749,17 @@
       dropdown.id = `venue-dropdown-${index}`;
       dropdown.style.cssText = `
         background: #1a1a2e;
-        border: 1px solid rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.45);
         border-radius: 12px;
         margin-top: 8px;
         padding: 16px;
       `;
       dropdown.innerHTML = `
         <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px">No results found — enter manually:</div>
-        <input type="text" id="manual-name-${index}" placeholder="Venue name" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:8px;" />
-        <input type="text" id="manual-address-${index}" placeholder="Address (optional)" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;" />
+        <input type="text" id="manual-name-${index}" placeholder="Venue name" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.45);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:8px;" />
+        <input type="text" id="manual-address-${index}" placeholder="Address (optional)" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.45);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;" />
         <div style="display:flex;gap:8px">
-          <button onclick="saveManualVenue(${index})" style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:10px;color:white;font-size:13px;cursor:pointer;font-family:inherit;">Add this venue</button>
+          <button onclick="saveManualVenue(${index})" style="flex:1;background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:10px;color:white;font-size:13px;cursor:pointer;font-family:inherit;">Add this venue</button>
           <button onclick="document.getElementById('venue-dropdown-${index}').remove()" style="background:none;border:1px solid rgba(255,80,80,0.3);border-radius:8px;padding:10px 14px;color:rgba(255,80,80,0.6);font-size:13px;cursor:pointer;font-family:inherit;">✕</button>
           </div>
       `;
