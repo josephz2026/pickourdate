@@ -556,8 +556,9 @@
       block.innerHTML = `
         <div class="venue-number">Venue ${index + 1}</div>
         <div class="venue-input-area">
-          <input type="text" placeholder="Paste Google Maps link or venue name" id="venue-input-${index}" />
-          <button class="fetch-btn" onclick="fillVenue(${index})">Auto-fill from Maps</button>
+          <input type="text" placeholder="Search for a venue or restaurant…" id="venue-input-${index}" oninput="handleVenueInput(${index})" autocomplete="off" />
+          <div id="venue-suggestions-${index}" style="position:relative"></div>
+          <button class="fetch-btn" onclick="showManualEntry(${index})" style="margin-top:6px;opacity:0.6;font-size:12px">+ Add manually instead</button>
         </div>
         <div class="venue-filled" id="venue-filled-${index}">
           <div class="venue-name-display" id="venue-name-${index}"></div>
@@ -570,29 +571,84 @@
       if (venues.length >= 4) document.getElementById('add-venue-btn').style.display = 'none';
     }
 
-    async function fillVenue(index) {
+    let venueTimers = {};
+
+    function handleVenueInput(index) {
       const input = document.getElementById(`venue-input-${index}`).value.trim();
-      if (!input) { alert('Please enter a venue name or Google Maps link.'); return; }
-      const btn = document.querySelector(`#venue-block-${index} .fetch-btn`);
-      btn.textContent = 'Searching...';
-      btn.disabled = true;
+      clearTimeout(venueTimers[index]);
+      const suggestionsEl = document.getElementById(`venue-suggestions-${index}`);
+      if (input.length < 2) { suggestionsEl.innerHTML = ''; return; }
+      suggestionsEl.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0">Searching…</div>`;
+      venueTimers[index] = setTimeout(() => fetchSuggestions(index, input), 350);
+    }
+
+    async function fetchSuggestions(index, input) {
+      const suggestionsEl = document.getElementById(`venue-suggestions-${index}`);
       try {
-        const response = await fetch('/api/places', {
+        const response = await fetch('/api/autocomplete', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ input })
         });
         const data = await response.json();
-        if (data.results && data.results.length > 0) {
-          showVenueDropdown(index, data.results);
+        if (data.suggestions && data.suggestions.length > 0) {
+          suggestionsEl.innerHTML = `<div style="
+            background:#1a1a2e;
+            border:1px solid rgba(255,255,255,0.15);
+            border-radius:12px;
+            margin-top:6px;
+            overflow:hidden;
+          ">${data.suggestions.map((s, i) => `
+            <div onclick="selectSuggestion(${index}, '${s.placeId}', '${s.name.replace(/'/g, "\\'")}', '${s.address.replace(/'/g, "\\'")}'')" style="
+              padding:12px 16px;
+              cursor:pointer;
+              border-bottom:1px solid rgba(255,255,255,0.07);
+            " onmouseover="this.style.background='rgba(255,255,255,0.06)'"
+               onmouseout="this.style.background='transparent'">
+              <div style="color:white;font-size:14px">${s.name}</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:12px">${s.address}</div>
+            </div>`).join('')}
+          </div>`;
         } else {
-          showManualEntry(index);
+          suggestionsEl.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0">No results — <span style="cursor:pointer;text-decoration:underline" onclick="showManualEntry(${index})">add manually</span></div>`;
         }
       } catch (err) {
-        alert('Something went wrong. Please try again.');
-      } finally {
-        btn.textContent = 'Auto-fill from Maps';
-        btn.disabled = false;
+        suggestionsEl.innerHTML = '';
+      }
+    }
+
+    async function selectSuggestion(index, placeId, name, address) {
+      const suggestionsEl = document.getElementById(`venue-suggestions-${index}`);
+      suggestionsEl.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0">Loading details…</div>`;
+      document.getElementById(`venue-input-${index}`).value = name;
+      try {
+        const response = await fetch('/api/placedetails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeId })
+        });
+        const place = await response.json();
+        venues[index] = {
+          name: place.name || name,
+          tag: venues[index]?.tag || 'Dinner',
+          address: place.address || address,
+          maps: place.maps,
+          rating: place.rating,
+          reviews: place.reviews
+        };
+        suggestionsEl.innerHTML = '';
+        showVenueFilled(index);
+      } catch (err) {
+        venues[index] = {
+          name,
+          tag: venues[index]?.tag || 'Dinner',
+          address,
+          maps: `https://maps.google.com/?q=${encodeURIComponent(name)}`,
+          rating: null,
+          reviews: null
+        };
+        suggestionsEl.innerHTML = '';
+        showVenueFilled(index);
       }
     }
 
