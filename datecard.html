@@ -260,8 +260,11 @@
       <a class="action-btn" id="maps-btn" href="https://maps.google.com" target="_blank">
         Open in Google Maps
       </a>
-      <button class="action-btn" onclick="addToCalendar()">
-        Add to calendar
+      <button class="action-btn" onclick="addToGoogleCalendar()">
+        Add to Google Calendar
+      </button>
+      <button class="action-btn" onclick="addToAppleCalendar()">
+        Add to Apple Calendar
       </button>
       <button class="action-btn" onclick="shareWithFriend()">
         Share with a friend
@@ -284,12 +287,21 @@
       let v = venue;
       let s = slot;
 
-      if (slug && (!v.name || !s.date)) {
+      if (slug) {
         try {
           const page = await getDatePage(slug);
           if (page) {
-            v = page.selected_venue || v;
-            s = page.selected_slot || s;
+            // Always prefer database data over localStorage
+            if (page.selected_venue) {
+              v = typeof page.selected_venue === 'string'
+                ? JSON.parse(page.selected_venue)
+                : page.selected_venue;
+            }
+            if (page.selected_slot) {
+              s = typeof page.selected_slot === 'string'
+                ? JSON.parse(page.selected_slot)
+                : page.selected_slot;
+            }
             if (page.guest_name) {
               document.getElementById('subtitle').textContent =
                 `Can't wait, ${page.guest_name}. See you then.`;
@@ -300,7 +312,7 @@
 
       if (v.name) {
         document.getElementById('summary-venue').innerHTML =
-          `${v.name} <span class="summary-tag">${v.tag}</span>`;
+          `${v.name} <span class="summary-tag">${v.tag || ''}</span>`;
         document.getElementById('maps-btn').href = v.maps || 'https://maps.google.com';
       }
 
@@ -310,15 +322,41 @@
       }
     }
 
-    function addToCalendar() {
-      const venueName = venue.name || 'Our Date';
-      const address = venue.address || '';
+   function addToGoogleCalendar() {
+      const venueName = (typeof venue === 'object' && venue.name) ? venue.name : 'Our Date';
+      const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
       const text = encodeURIComponent(`Date at ${venueName}`);
       const location = encodeURIComponent(address);
       window.open(
         `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&location=${location}`,
         '_blank'
       );
+    }
+
+    function addToAppleCalendar() {
+      const venueName = (typeof venue === 'object' && venue.name) ? venue.name : 'Our Date';
+      const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
+      const slot = JSON.parse(localStorage.getItem('slot') || '{}');
+      const now = new Date();
+      const dtstart = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const dtend = new Date(now.getTime() + 7200000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'BEGIN:VEVENT',
+        `SUMMARY:Date at ${venueName}`,
+        `LOCATION:${address}`,
+        `DTSTART:${dtstart}`,
+        `DTEND:${dtend}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\n');
+      const blob = new Blob([ics], { type: 'text/calendar' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'date.ics';
+      a.click();
     }
 
     function shareWithFriend() {
