@@ -8,7 +8,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow-x: hidden; }
-
     body {
       font-family: 'DM Sans', sans-serif;
       background: #E8E0D5;
@@ -19,8 +18,6 @@
       justify-content: center;
       padding: 24px;
     }
-
-    /* ── SHARED CARD ── */
     .card {
       background: #12121C;
       border-radius: 32px;
@@ -31,7 +28,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .glow {
       position: absolute;
       width: 400px;
@@ -43,7 +39,6 @@
       transform: translateX(-50%);
       pointer-events: none;
     }
-
     .stars {
       position: absolute;
       inset: 0;
@@ -51,7 +46,6 @@
       overflow: hidden;
       border-radius: 32px;
     }
-
     .star {
       position: absolute;
       width: 2px;
@@ -61,13 +55,10 @@
       opacity: 0;
       animation: twinkle 3s infinite;
     }
-
     @keyframes twinkle {
       0%, 100% { opacity: 0; transform: scale(0.5); }
       50% { opacity: 0.5; transform: scale(1.2); }
     }
-
-    /* ── TYPOGRAPHY ── */
     .wordmark {
       font-size: 11px;
       font-weight: 500;
@@ -78,7 +69,6 @@
       position: relative;
       z-index: 1;
     }
-
     .hero-text {
       font-family: 'Playfair Display', serif;
       font-size: clamp(42px, 10vw, 58px);
@@ -89,12 +79,7 @@
       position: relative;
       z-index: 1;
     }
-
-    .hero-text em {
-      font-style: italic;
-      color: rgba(255,255,255,0.4);
-    }
-
+    .hero-text em { font-style: italic; color: rgba(255,255,255,0.4); }
     .hero-sub {
       font-size: 16px;
       font-weight: 400;
@@ -104,8 +89,6 @@
       position: relative;
       z-index: 1;
     }
-
-    /* ── BUTTONS ── */
     .ghost-btn {
       display: inline-block;
       background: transparent;
@@ -124,13 +107,7 @@
       z-index: 1;
       width: 100%;
     }
-
-    .ghost-btn:hover {
-      border-color: rgba(255,255,255,0.6);
-      background: rgba(255,255,255,0.05);
-    }
-
-    /* ── FOOTER ── */
+    .ghost-btn:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); }
     .card-footer {
       margin-top: 36px;
       font-size: 10px;
@@ -140,9 +117,7 @@
       position: relative;
       z-index: 1;
     }
-
-    /* ── DATE PAGE LABEL ── */
-   .date-label {
+    .date-label {
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.2em;
@@ -152,7 +127,6 @@
       position: relative;
       z-index: 1;
     }
-
     .date-hero {
       font-family: 'Playfair Display', serif;
       font-size: clamp(44px, 11vw, 60px);
@@ -163,13 +137,7 @@
       position: relative;
       z-index: 1;
     }
-
-    .date-hero .name {
-      font-style: italic;
-      color: rgba(255,255,255,0.45);
-      display: block;
-    }
-
+    .date-hero .name { font-style: italic; color: rgba(255,255,255,0.45); display: block; }
     .date-note {
       font-size: 16px;
       font-weight: 400;
@@ -180,9 +148,6 @@
       position: relative;
       z-index: 1;
     }
-    
-
-    /* ── LOADING ── */
     .loading-dot {
       display: inline-block;
       width: 4px;
@@ -191,28 +156,67 @@
       background: rgba(255,255,255,0.3);
       animation: pulse 1.4s infinite;
     }
+    @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+    .error-text { font-size: 14px; color: rgba(255,100,100,0.5); position: relative; z-index: 1; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.7s ease forwards; }
+    .hidden { display: none; }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
-    }
-
-    .error-text {
-      font-size: 14px;
-      color: rgba(255,100,100,0.5);
+    /* datecard styles */
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+    .pop-in { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .confirmed-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(100,220,150,0.9);
+      border: 1px solid rgba(100,220,150,0.3);
+      padding: 6px 18px;
+      border-radius: 50px;
+      margin-bottom: 28px;
       position: relative;
       z-index: 1;
     }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+    .summary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 8px 0;
+      margin-bottom: 28px;
+      text-align: left;
+      position: relative;
+      z-index: 1;
     }
-
-    .fade-up { animation: fadeUp 0.7s ease forwards; }
-
-    /* ── HIDDEN ── */
-    .hidden { display: none; }
+    .summary-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+    .summary-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); font-weight: 500; margin-bottom: 4px; }
+    .summary-value { font-size: 17px; font-weight: 500; color: white; }
+    .summary-tag {
+      display: inline-block; font-size: 11px; padding: 3px 10px;
+      border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6); margin-left: 8px;
+      font-family: 'DM Sans', sans-serif; vertical-align: middle;
+    }
+    .actions { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
+    .action-btn {
+      width: 100%; padding: 16px; border-radius: 50px;
+      font-size: 14px; font-weight: 500; letter-spacing: 0.06em;
+      font-family: 'DM Sans', sans-serif; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center;
+      justify-content: center; gap: 8px; text-decoration: none;
+      text-transform: uppercase; color: white;
+      background: transparent; border: 1px solid rgba(255,255,255,0.3);
+    }
+    .action-btn:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.07); transform: translateY(-2px); }
   </style>
 </head>
 <body>
@@ -229,17 +233,14 @@
       <div class="star" style="top:90%;left:35%;animation-delay:1.0s"></div>
       <div class="star" style="top:25%;left:50%;animation-delay:2.2s"></div>
     </div>
-    
+    <a href="/dashboard" style="position:absolute;top:24px;right:24px;font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:0.05em;z-index:10;">My dates →</a>
     <h1 class="hero-text">Make the<br><em>move.</em></h1>
     <p class="hero-sub">The effort is yours.<br>The choice is hers.</p>
-    <a href="/dashboard" style="position:absolute;top:24px;right:24px;font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:0.05em;z-index:10;" >My dates →</a>
-    <button class="ghost-btn" onclick="window.location.href='creator.html'">
-      Create a date plan
-    </button>
+    <button class="ghost-btn" onclick="window.location.href='creator.html'">Create a date plan</button>
     <p class="card-footer">pickourdate.co</p>
   </div>
 
-  <!-- Date page -->
+  <!-- Date proposal page -->
   <div class="card hidden" id="date-page">
     <div class="glow"></div>
     <div class="stars">
@@ -251,18 +252,67 @@
       <div class="star" style="top:90%;left:35%;animation-delay:1.0s"></div>
       <div class="star" style="top:25%;left:50%;animation-delay:2.2s"></div>
     </div>
-    <div id="date-inner">
-      <div class="loading-dot"></div>
+    <div id="date-inner"><div class="loading-dot"></div></div>
+  </div>
+
+  <!-- Confirmed datecard page -->
+  <div class="card hidden pop-in" id="datecard-page">
+    <div class="glow"></div>
+    <div class="stars">
+      <div class="star" style="top:8%;left:7%;animation-delay:0s"></div>
+      <div class="star" style="top:15%;left:92%;animation-delay:0.7s"></div>
+      <div class="star" style="top:55%;left:4%;animation-delay:1.3s"></div>
+      <div class="star" style="top:75%;left:88%;animation-delay:0.4s"></div>
+      <div class="star" style="top:40%;left:96%;animation-delay:1.9s"></div>
+      <div class="star" style="top:90%;left:35%;animation-delay:1.0s"></div>
+      <div class="star" style="top:25%;left:50%;animation-delay:2.2s"></div>
     </div>
+    <div class="confirmed-badge">✓ Confirmed</div>
+    <h1 class="date-hero" style="font-size:clamp(44px,11vw,58px);margin-bottom:8px">It's a <em style="font-style:italic;color:rgba(255,255,255,0.45)">date.</em></h1>
+    <p style="font-size:15px;color:rgba(255,255,255,0.5);font-weight:300;margin-bottom:36px;position:relative;z-index:1" id="datecard-subtitle">Can't wait. See you then.</p>
+    <div class="summary">
+      <div class="summary-row">
+        <div class="summary-icon">📍</div>
+        <div>
+          <div class="summary-label">Spot</div>
+          <div class="summary-value" id="dc-venue">—</div>
+        </div>
+      </div>
+      <div class="summary-row">
+        <div class="summary-icon">📅</div>
+        <div>
+          <div class="summary-label">Date</div>
+          <div class="summary-value" id="dc-date">—</div>
+        </div>
+      </div>
+      <div class="summary-row">
+        <div class="summary-icon">🕖</div>
+        <div>
+          <div class="summary-label">Time</div>
+          <div class="summary-value" id="dc-time">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="action-btn" id="dc-maps-btn" href="https://maps.google.com" target="_blank">Open in Google Maps</a>
+      <button class="action-btn" onclick="addToGoogleCalendar()">Add to Google Calendar</button>
+      <button class="action-btn" onclick="addToAppleCalendar()">Add to Apple Calendar</button>
+      <button class="action-btn" onclick="shareWithFriend()">Share with a friend</button>
+      <button class="action-btn" onclick="window.location.href='/creator'">Create your own date page</button>
+    </div>
+    <p class="card-footer">pickourdate.co</p>
   </div>
 
   <script src="supabase.js"></script>
   <script>
+    let venue = {};
+    let slot = {};
+
     async function init() {
-      const params = new URLSearchParams(window.location.search);
-const rawPath = window.location.pathname;
-const slug = rawPath.replace(/^\//, '') || params.get('id');
-console.log('path:', rawPath, 'slug:', slug);
+      const rawPath = window.location.pathname;
+      const slug = rawPath.replace(/^\//, '');
+      console.log('path:', rawPath, 'slug:', slug);
+
       if (!slug) {
         document.getElementById('landing').classList.remove('hidden');
         return;
@@ -283,37 +333,61 @@ console.log('path:', rawPath, 'slug:', slug);
           return;
         }
 
+        // Save slug for other pages
         localStorage.setItem('slug', slug);
-        localStorage.setItem('dateMode', page.date_mode);
 
-       await updateDatePage(slug, { viewed_at: new Date().toISOString() });
-
+        // Notify viewed
+        await updateDatePage(slug, { viewed_at: new Date().toISOString() });
         if (page.notify_email) {
           fetch('/api/notify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: page.notify_email,
-              guestName: page.guest_name,
-              type: 'viewed'
-            })
+            body: JSON.stringify({ to: page.notify_email, guestName: page.guest_name, type: 'viewed' })
           });
         }
 
+        // If confirmed — show datecard
+        if (page.status === 'confirmed') {
+          document.getElementById('date-page').classList.add('hidden');
+          document.getElementById('datecard-page').classList.remove('hidden');
+
+          if (page.selected_venue) {
+            venue = typeof page.selected_venue === 'string'
+              ? JSON.parse(page.selected_venue) : page.selected_venue;
+          }
+          if (page.selected_slot) {
+            slot = typeof page.selected_slot === 'string'
+              ? JSON.parse(page.selected_slot) : page.selected_slot;
+          }
+
+          if (page.guest_name) {
+            document.getElementById('datecard-subtitle').textContent =
+              `Can't wait, ${page.guest_name}. See you then.`;
+          }
+
+          if (venue.name) {
+            document.getElementById('dc-venue').innerHTML =
+              `${venue.name} <span class="summary-tag">${venue.tag || ''}</span>`;
+            document.getElementById('dc-maps-btn').href =
+              venue.maps || `https://maps.google.com/?q=${encodeURIComponent(venue.address || venue.name)}`;
+          }
+          if (slot.date) {
+            document.getElementById('dc-date').textContent = `${slot.day}, ${slot.date}`;
+            document.getElementById('dc-time').textContent = slot.time;
+          }
+          return;
+        }
+
+        // Show proposal
         const note = page.personal_note
           ? `<p class="date-note">"${page.personal_note}"</p>`
           : '<div style="margin-bottom:48px"></div>';
 
-        if (page.status === 'confirmed') {
-            window.location.href = 'datecard.html';
-            return;
-          }
+        const senderLine = page.sender_name
+          ? `<p class="date-label">a date planned by ${page.sender_name}</p>`
+          : `<p class="date-label">you have a date proposal</p>`;
 
-          const senderLine = page.sender_name 
-            ? `<p class="date-label">a date planned by ${page.sender_name}</p>`
-            : `<p class="date-label">you have a date proposal</p>`;
-
-          document.getElementById('date-inner').innerHTML = `
+        document.getElementById('date-inner').innerHTML = `
           ${senderLine}
           <h1 class="date-hero fade-up">
             Hey,
@@ -327,11 +401,84 @@ console.log('path:', rawPath, 'slug:', slug);
         `;
 
       } catch (err) {
+        console.error(err);
         document.getElementById('date-inner').innerHTML = `
           <p class="date-label">pickourdate.co</p>
           <h1 class="date-hero">Hmm.</h1>
           <p class="error-text">Something went wrong. Try again.</p>
         `;
+      }
+    }
+
+    function parseSlotToDate() {
+      try {
+        const dateStr = slot.date || '';
+        const timeStr = slot.time || '12:00 PM';
+        const year = new Date().getFullYear();
+        const d = new Date(`${dateStr} ${year} ${timeStr}`);
+        if (isNaN(d)) return null;
+        return d;
+      } catch { return null; }
+    }
+
+    function toICSDate(d) {
+      return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    }
+
+    function addToGoogleCalendar() {
+      const venueName = venue.name || 'Our Date';
+      const address = venue.address || '';
+      const start = parseSlotToDate();
+      const end = start ? new Date(start.getTime() + 7200000) : null;
+      let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Date at ' + venueName)}&location=${encodeURIComponent(address)}`;
+      if (start && !isNaN(start)) {
+        url += `&dates=${toICSDate(start)}/${toICSDate(end)}`;
+      }
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function addToAppleCalendar() {
+      const venueName = venue.name || 'Our Date';
+      const address = venue.address || '';
+      const start = parseSlotToDate() || new Date();
+      const end = new Date(start.getTime() + 7200000);
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//pickourdate//EN',
+        'BEGIN:VEVENT',
+        `SUMMARY:Date at ${venueName}`,
+        `LOCATION:${address}`,
+        `DTSTART:${toICSDate(start)}`,
+        `DTEND:${toICSDate(end)}`,
+        `DESCRIPTION:Your date at ${venueName}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+      const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.setAttribute('download', 'date.ics');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function shareWithFriend() {
+      const text = `${venue.name || 'Our date'} — ${slot.day || ''} ${slot.date || ''} at ${slot.time || ''}`;
+      if (navigator.share) {
+        navigator.share({ title: "It's a date!", text, url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
       }
     }
 
