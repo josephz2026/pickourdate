@@ -98,19 +98,19 @@
       transition: border-color 0.2s;
     }
 
-    .field input:focus, .field textarea:focus { border-color: rgba(255,255,255,0.3); }
+    .field input:focus, .field textarea:focus { border-color: rgba(255,255,255,0.7); }
     .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.45); }
     .field textarea { resize: none; height: 80px; }
 
     .venue-block {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.35);
       border-radius: 14px;
       padding: 16px;
       margin-bottom: 10px;
     }
 
-    .venue-block.filled { border-color: rgba(255,255,255,0.2); }
+    .venue-block.filled { border-color: rgba(255,255,255,0.7); }
 
     .venue-number {
       font-size: 12px;
@@ -141,7 +141,7 @@
     .venue-block.filled .venue-input-area { display: none; }
 
     .venue-name-display { font-size: 15px; font-weight: 500; color: white; margin-bottom: 3px; }
-    .venue-meta { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 12px; }
+    .venue-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
 
     .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 
@@ -157,7 +157,7 @@
       transition: all 0.15s;
     }
 
-    .tag-pill.active { border-color: rgba(255,255,255,0.5); color: white; }
+    .tag-pill.active { border-color: rgba(255,255,255,0.85); color: white; }
 
     .remove-btn {
       font-size: 11px;
@@ -185,7 +185,7 @@
       transition: all 0.2s;
     }
 
-    .ghost-btn:hover { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); }
+    .ghost-btn:hover { border-color: rgba(255,255,255,0.7); color: rgba(255,255,255,0.85); }
 
 .fetch-btn {
       width: 100%;
@@ -205,8 +205,8 @@
     .fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .slot-block {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.35);
       border-radius: 14px;
       padding: 16px;
       margin-bottom: 10px;
@@ -220,10 +220,10 @@
     }
 
     .slot-num {
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
     }
 
     .month-nav {
@@ -238,7 +238,7 @@
     .month-arrow {
       background: none;
       border: none;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.7);
       cursor: pointer;
       font-size: 16px;
       padding: 4px 8px;
@@ -257,14 +257,14 @@
 
     .cal-day-label {
       font-size: 10px;
-      color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
       text-align: center;
       padding: 4px 0;
     }
 
     .cal-day {
       font-size: 13px;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.85);
       text-align: center;
       padding: 7px 4px;
       border-radius: 8px;
@@ -296,14 +296,14 @@
     }
 
     .time-select option { background: #1a1a2e; color: white; }
-    .time-colon { color: rgba(255,255,255,0.3); font-size: 16px; }
+    .time-colon { color: rgba(255,255,255,0.7); font-size: 16px; }
 
     .slot-selected-display {
       font-size: 13px;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.85);
       margin-top: 10px;
       padding: 8px 12px;
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.35);
       border-radius: 8px;
       display: none;
     }
@@ -321,7 +321,7 @@
     .toggle-row:last-of-type { border-bottom: none; }
     .toggle-info { flex: 1; }
     .toggle-title { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
-    .toggle-desc { font-size: 11px; color: rgba(255,255,255,0.2); }
+    .toggle-desc { font-size: 11px; color: rgba(255,255,255,0.7); }
 
     .toggle-track {
       position: relative;
@@ -335,7 +335,7 @@
       margin-left: 16px;
     }
 
-    .toggle-track.on { background: rgba(255,255,255,0.5); }
+    .toggle-track.on { background: rgba(255,255,255,0.85); }
 
     .toggle-thumb {
       position: absolute;
@@ -354,7 +354,7 @@
       width: 100%;
       padding: 18px;
       border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.7);
       background: transparent;
       color: white;
       font-size: 13px;
@@ -374,7 +374,7 @@
 
     .link-box {
       display: none;
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.35);
       border: 1px solid rgba(255,255,255,0.45);
       border-radius: 16px;
       padding: 24px;
@@ -388,7 +388,7 @@
 
     .link-label {
       font-size: 10px;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.7);
       letter-spacing: 0.15em;
       text-transform: uppercase;
       margin-bottom: 12px;
@@ -419,7 +419,7 @@
       transition: all 0.2s;
     }
 
-    .copy-btn:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+    .copy-btn:hover { border-color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
 
     .page-footer {
       text-align: center;
@@ -565,7 +565,7 @@
         <div class="venue-input-area">
           <input type="text" placeholder="Search for a venue or restaurant…" id="venue-input-${index}" oninput="handleVenueInput(${index})" autocomplete="off" />
           <div id="venue-suggestions-${index}" style="position:relative"></div>
-          <button class="fetch-btn" onclick="showManualEntry(${index})" style="margin-top:6px;opacity:1;font-size:12px;color:rgba(255,255,255,0.9);border-color:rgba(255,255,255,0.5)">+ Add manually instead</button>
+          <button class="fetch-btn" onclick="showManualEntry(${index})" style="margin-top:6px;opacity:1;font-size:12px;color:rgba(255,255,255,0.9);border-color:rgba(255,255,255,0.85)">+ Add manually instead</button>
           <button class="remove-btn" onclick="removeVenue(${index})" style="margin-top:10px;display:block">Remove venue</button>
         </div>
         <div class="venue-filled" id="venue-filled-${index}">
@@ -755,11 +755,11 @@
         padding: 16px;
       `;
       dropdown.innerHTML = `
-        <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px">No results found — enter manually:</div>
+        <div style="color:rgba(255,255,255,0.85);font-size:12px;margin-bottom:12px">No results found — enter manually:</div>
         <input type="text" id="manual-name-${index}" placeholder="Venue name" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.45);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:8px;" />
         <input type="text" id="manual-address-${index}" placeholder="Address (optional)" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.45);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;" />
         <div style="display:flex;gap:8px">
-          <button onclick="saveManualVenue(${index})" style="flex:1;background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:10px;color:white;font-size:13px;cursor:pointer;font-family:inherit;">Add this venue</button>
+          <button onclick="saveManualVenue(${index})" style="flex:1;background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.7);border-radius:8px;padding:10px;color:white;font-size:13px;cursor:pointer;font-family:inherit;">Add this venue</button>
           <button onclick="document.getElementById('venue-dropdown-${index}').remove()" style="background:none;border:1px solid rgba(255,80,80,0.3);border-radius:8px;padding:10px 14px;color:rgba(255,80,80,0.6);font-size:13px;cursor:pointer;font-family:inherit;">✕</button>
           </div>
       `;
