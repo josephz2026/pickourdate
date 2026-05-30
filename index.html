@@ -420,7 +420,7 @@
         const d = new Date(`${dateStr} ${year} ${timeStr}`);
         if (isNaN(d)) return null;
         return d;
-      } catch { return null; }
+      } catch(e) { return null; }
     }
 
     function toICSDate(d) {
