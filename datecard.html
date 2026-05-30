@@ -279,9 +279,9 @@
 
   <script src="supabase.js"></script>
   <script>
-    const venue = JSON.parse(localStorage.getItem('venue') || '{}');
-    const slot = JSON.parse(localStorage.getItem('slot') || '{}');
-    const slug = localStorage.getItem('slug');
+    let venue = JSON.parse(localStorage.getItem('venue') || '{}');
+    let slot = JSON.parse(localStorage.getItem('slot') || '{}');
+    const slug = localStorage.getItem('slug') || window.location.pathname.replace(/^\//, '');
 
     async function loadPage() {
       let v = venue;
@@ -290,7 +290,7 @@
       if (slug) {
         try {
           const page = await getDatePage(slug);
-          if (page) {
+        if (page) {
             // Always prefer database data over localStorage
             if (page.selected_venue) {
               v = typeof page.selected_venue === 'string'
@@ -306,6 +306,8 @@
               document.getElementById('subtitle').textContent =
                 `Can't wait, ${page.guest_name}. See you then.`;
             }
+            venue = v;
+            slot = s;
           }
         } catch (err) { console.error(err); }
       }
@@ -327,33 +329,42 @@
       const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
       const text = encodeURIComponent(`Date at ${venueName}`);
       const location = encodeURIComponent(address);
-      window.open(
-        `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&location=${location}`,
-        '_blank'
+      const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&location=${location}`;
+      const a = document.createElement('a');
+      a.href = calUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
       );
     }
 
-    function addToAppleCalendar() {
+  function addToAppleCalendar() {
       const venueName = (typeof venue === 'object' && venue.name) ? venue.name : 'Our Date';
       const address = (typeof venue === 'object' && venue.address) ? venue.address : '';
-      const slot = JSON.parse(localStorage.getItem('slot') || '{}');
-      const now = new Date();
-      const dtstart = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-      const dtend = new Date(now.getTime() + 7200000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
       const ics = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
+        'PRODID:-//pickourdate//EN',
         'BEGIN:VEVENT',
         `SUMMARY:Date at ${venueName}`,
         `LOCATION:${address}`,
-        `DTSTART:${dtstart}`,
-        `DTEND:${dtend}`,
+        `DTSTART:${new Date().toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,
+        `DTEND:${new Date(Date.now()+7200000).toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,
+        `DESCRIPTION:Your date at ${venueName}`,
         'END:VEVENT',
         'END:VCALENDAR'
-      ].join('\n');
-      const blob = new Blob([ics], { type: 'text/calendar' });
+      ].join('\r\n');
+      const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
       const url = URL.createObjectURL(blob);
-      window.location.href = url;
+      const a = document.createElement('a');
+      a.href = url;
+      a.setAttribute('download', 'date.ics');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     function shareWithFriend() {
