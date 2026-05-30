@@ -187,7 +187,7 @@
 
         updateDatePage(slug, { viewed_at: new Date().toISOString() });
 
-        if (page.notify_email) {
+       if (page.notify_email && page.notify_on_view !== false) {
           fetch('/api/notify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
