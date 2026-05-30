@@ -642,6 +642,45 @@
       showVenueFilled(index);
     }
 
+    function showManualEntry(index) {
+      const block = document.getElementById(`venue-block-${index}`);
+      let dropdown = document.getElementById(`venue-dropdown-${index}`);
+      if (dropdown) dropdown.remove();
+      dropdown = document.createElement('div');
+      dropdown.id = `venue-dropdown-${index}`;
+      dropdown.style.cssText = `
+        background: #1a1a2e;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        margin-top: 8px;
+        padding: 16px;
+      `;
+      dropdown.innerHTML = `
+        <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px">No results found — enter manually:</div>
+        <input type="text" id="manual-name-${index}" placeholder="Venue name" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:8px;" />
+        <input type="text" id="manual-address-${index}" placeholder="Address (optional)" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 12px;color:white;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;" />
+        <button onclick="saveManualVenue(${index})" style="width:100%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:10px;color:white;font-size:13px;cursor:pointer;font-family:inherit;">Add this venue</button>
+      `;
+      block.appendChild(dropdown);
+    }
+
+    function saveManualVenue(index) {
+      const name = document.getElementById(`manual-name-${index}`).value.trim();
+      const address = document.getElementById(`manual-address-${index}`).value.trim();
+      if (!name) { alert('Please enter a venue name.'); return; }
+      venues[index] = {
+        name,
+        tag: venues[index]?.tag || 'Dinner',
+        address: address || '',
+        maps: address ? `https://maps.google.com/?q=${encodeURIComponent(address)}` : '',
+        rating: null,
+        reviews: null
+      };
+      const dropdown = document.getElementById(`venue-dropdown-${index}`);
+      if (dropdown) dropdown.remove();
+      showVenueFilled(index);
+    }
+    
     function showVenueFilled(index) {
       const v = venues[index];
       document.getElementById(`venue-block-${index}`).classList.add('filled');
