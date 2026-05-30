@@ -586,7 +586,7 @@
         if (data.results && data.results.length > 0) {
           showVenueDropdown(index, data.results);
         } else {
-          alert('No results found. Try a different name or paste a Google Maps link.');
+          showManualEntry(index);
         }
       } catch (err) {
         alert('Something went wrong. Please try again.');
