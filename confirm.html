@@ -330,7 +330,7 @@
           });
 
           const page = await getDatePage(slug);
-          if (page && page.notify_email) {
+          if (page && page.notify_email && page.notify_on_confirm !== false) {
             fetch('/api/notify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
