@@ -534,7 +534,15 @@
 
     let currentUserId = null;
     _supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) currentUserId = session.user.id;
+      if (session) {
+        currentUserId = session.user.id;
+        // Link any past anonymous dates to this account
+        _supabase.from('date_pages')
+          .update({ creator_id: session.user.id })
+          .eq('creator_email', session.user.email)
+          .is('creator_id', null)
+          .then(() => {});
+      }
     });
     try {
       const stored = localStorage.getItem('sb-jjzscluiudnpzrpfmfje-auth-token');
