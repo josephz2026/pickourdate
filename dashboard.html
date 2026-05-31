@@ -698,6 +698,17 @@
       <label>Link expires (optional)</label>
       <input type="datetime-local" id="edit-expires" />
     </div>
+    <div class="field">
+      <label>Your rating</label>
+      <div id="edit-rating-stars" style="display:flex;gap:8px;margin-top:6px">
+        <span onclick="setEditRating(1)" data-star="1" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+        <span onclick="setEditRating(2)" data-star="2" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+        <span onclick="setEditRating(3)" data-star="3" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+        <span onclick="setEditRating(4)" data-star="4" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+        <span onclick="setEditRating(5)" data-star="5" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+      </div>
+    </div>
+    <div class="modal-footer">
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeModal()">Cancel</button>
       <button class="btn-primary" onclick="saveEdit()">Save changes</button>
@@ -1053,14 +1064,27 @@ function copyLink(slug) {
 }
 
 // Edit modal
-function openEdit(id) {
-  editingId = id;
-  const p = allPages.find(r => r.id === id);
-  document.getElementById('edit-notes').value   = p?.notes || '';
-  document.getElementById('edit-cost').value    = p?.estimated_cost || '';
-  document.getElementById('edit-expires').value = p?.expires_at ? p.expires_at.slice(0,16) : '';
-  document.getElementById('edit-modal').classList.add('open');
-}
+let editRating = 0;
+
+  function setEditRating(n) {
+    editRating = n;
+    document.querySelectorAll('#edit-rating-stars span').forEach(s => {
+      s.style.opacity = parseInt(s.dataset.star) <= n ? '1' : '0.3';
+    });
+  }
+
+  function openEdit(id) {
+    editingId = id;
+    const p = allPages.find(r => r.id === id);
+    document.getElementById('edit-notes').value   = p?.notes || '';
+    document.getElementById('edit-cost').value    = p?.estimated_cost || '';
+    document.getElementById('edit-expires').value = p?.expires_at ? p.expires_at.slice(0,16) : '';
+    editRating = p?.date_rating || 0;
+    document.querySelectorAll('#edit-rating-stars span').forEach(s => {
+      s.style.opacity = parseInt(s.dataset.star) <= editRating ? '1' : '0.3';
+    });
+    document.getElementById('edit-modal').classList.add('open');
+  }
 
 function closeModal() {
   editingId = null;
@@ -1073,6 +1097,7 @@ async function saveEdit() {
     notes:          document.getElementById('edit-notes').value || null,
     estimated_cost: document.getElementById('edit-cost').value ? parseFloat(document.getElementById('edit-cost').value) : null,
     expires_at:     document.getElementById('edit-expires').value ? new Date(document.getElementById('edit-expires').value).toISOString() : null,
+    date_rating:    editRating || null,
   };
   const { error } = await sb.from('date_pages').update(update).eq('id', editingId);
   if (error) { showToast('Error: ' + error.message); return; }
