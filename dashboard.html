@@ -624,6 +624,12 @@
       Continue with Google
     </button>
     <div class="divider">or</div>
+    <div id="magic-link-section">
+      <input type="email" id="magic-email" placeholder="your@email.com" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:10px;font-size:14px;font-family:var(--sans);outline:none;margin-bottom:10px;" />
+      <button class="btn-anon" onclick="sendMagicLink()" id="magic-btn" style="background:var(--text);color:var(--bg);border:none;font-weight:500;">Send magic link →</button>
+      <p id="magic-sent" style="display:none;color:var(--green);font-size:13px;margin-top:10px;text-align:center">✓ Check your email for a login link!</p>
+    </div>
+    <div class="divider">or</div>
     <button class="btn-anon" onclick="continueAnon()">Browse without signing in</button>
   </div>
 </div>
@@ -739,6 +745,26 @@ async function signInGoogle() {
     options: { redirectTo: 'https://pickourdate.co/dashboard' }
   });
 }
+
+  async function sendMagicLink() {
+    const email = document.getElementById('magic-email').value.trim();
+    if (!email) { alert('Please enter your email.'); return; }
+    const btn = document.getElementById('magic-btn');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: 'https://pickourdate.co/dashboard' }
+    });
+    if (error) {
+      alert('Error: ' + error.message);
+      btn.textContent = 'Send magic link →';
+      btn.disabled = false;
+    } else {
+      document.getElementById('magic-sent').style.display = 'block';
+      btn.textContent = 'Sent!';
+    }
+  }
 
 async function continueAnon() {
   isAnon = true;
