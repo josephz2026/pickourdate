@@ -213,12 +213,15 @@
               'Can\'t wait, ' + page.guest_name + '. See you then.';
           }
 
-          if (venue.name) {
-            document.getElementById('dc-venue').innerHTML =
-              venue.name + ' <span class="summary-tag">' + (venue.tag || '') + '</span>';
+         if (venue.name) {
             var mapsUrl = venue.address 
               ? 'https://www.google.com/maps/search/' + encodeURIComponent(venue.name + ' ' + venue.address)
               : (venue.maps || 'https://maps.google.com');
+            document.getElementById('dc-venue').innerHTML =
+              '<a href="' + mapsUrl + '" target="_blank" style="color:white;text-decoration:underline">' + venue.name + '</a>' +
+              ' <span class="summary-tag">' + (venue.tag || '') + '</span>' +
+              (venue.address ? '<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px">' + venue.address + '</div>' : '') +
+              (venue.rating ? '<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px">' + venue.rating + '★' + (venue.reviews ? ' · ' + venue.reviews + ' reviews' : '') + '</div>' : '');
             document.getElementById('dc-maps-btn').href = mapsUrl;
           }
           if (slot.date) {
