@@ -643,6 +643,7 @@
       </div>
       <button class="btn-sm" onclick="handleSignOut()" id="signout-btn" style="display:none">Sign out</button>
       <a href="/creator.html" class="btn-create">+ New date</a>
+      <button class="btn-create" onclick="openLogModal()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border2);">+ Log a date</button>
     </div>
   </nav>
 
@@ -748,7 +749,11 @@
       <div class="field">
         <label>Your rating</label>
         <div id="log-rating-stars" style="display:flex;gap:8px;margin-top:6px">
-          ${[1,2,3,4,5].map(i => `<span onclick="setLogRating(${i})" data-star="${i}" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>`).join('')}
+          <span onclick="setLogRating(1)" data-star="1" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+          <span onclick="setLogRating(2)" data-star="2" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+          <span onclick="setLogRating(3)" data-star="3" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+          <span onclick="setLogRating(4)" data-star="4" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
+          <span onclick="setLogRating(5)" data-star="5" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>
         </div>
       </div>
       <div class="field" style="grid-column:1/-1">
@@ -956,7 +961,6 @@ function renderCards(pages) {
           <h3>No dates yet</h3>
           <p>Create your first date page and send her the link</p>
           <a href="/creator" class="btn-create">+ New date</a>
-      <button class="btn-create" onclick="openLogModal()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border2);">+ Log a date</button>
         </div>`;
       return;
     }
