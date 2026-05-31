@@ -10,9 +10,10 @@ export default async function handler(req, res) {
       // Follow redirects for short links like maps.app.goo.gl
       if (input.includes('goo.gl') || input.includes('maps.app')) {
         try {
-          const redirectRes = await fetch(input, { method: 'HEAD', redirect: 'follow' });
+          const redirectRes = await fetch(input, { redirect: 'follow' });
           input = redirectRes.url;
-        } catch(e) {}
+          console.log('Resolved URL:', input);
+        } catch(e) { console.log('Redirect error:', e.message); }
       }
       const match = input.match(/place\/([^/@]+)/);
       if (match) placeName = decodeURIComponent(match[1].replace(/\+/g, ' '));
