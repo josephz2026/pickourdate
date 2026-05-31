@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   const { to, guestName, venueName, date, time, type, address } = req.body;
   if (!to) return res.status(400).json({ error: 'Missing email' });
 
-  const mapsLink = `https://maps.google.com/?q=${encodeURIComponent(venueName || '')}`;
-  const calLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Date at ${venueName}`)}&details=${encodeURIComponent(`${venueName} — ${date} at ${time}`)}&location=${encodeURIComponent(venueName || '')}`;
+  const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent((venueName || '') + ' ' + (address || ''))}`;
+  const calLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Date at ${venueName}`)}&details=${encodeURIComponent(`${venueName} — ${date} at ${time}`)}&location=${encodeURIComponent((venueName || '') + ' ' + (address || ''))}&dates=${icsStart || ''}/${icsEnd || ''}`;
 
   function toISODate(dateStr, timeStr) {
     try {
@@ -112,6 +112,7 @@ export default async function handler(req, res) {
         <p style="margin:0;font-size:17px;font-family:'Georgia',serif">
           <a href="${mapsLink}" style="color:white;text-decoration:underline">${venueName}</a>
         </p>
+        ${address ? `<p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.5);font-family:'Helvetica',sans-serif">${address}</p>` : ''}
       </td></tr>
       <tr><td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);">
         <p style="margin:0 0 4px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-family:'Helvetica',sans-serif">Date</p>
@@ -134,7 +135,7 @@ export default async function handler(req, res) {
       html: card(`
         <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin:0 0 32px;font-family:'Helvetica',sans-serif">pickourdate.co</p>
         <h1 style="font-size:36px;font-weight:400;color:white;margin:0 0 16px;line-height:1.2">${guestName} opened<br><em style="color:rgba(255,255,255,0.45)">your proposal.</em></h1>
-        <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;margin:0;font-family:'Helvetica',sans-serif">She's looking at your options right now.<br>Fingers crossed.</p>
+        <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;margin:0;font-family:'Helvetica',sans-serif">They're looking at your options right now.<br>Fingers crossed.</p>
       `)
     },
     confirmed: {
