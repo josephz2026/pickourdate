@@ -654,6 +654,8 @@
       <div class="stat-card"><div class="val green" id="s-confirmed">0</div><div class="label">Confirmed</div></div>
       <div class="stat-card"><div class="val yellow" id="s-pending">0</div><div class="label">Pending</div></div>
       <div class="stat-card"><div class="val red" id="s-cost">$0</div><div class="label">Total spent</div></div>
+      <div class="stat-card"><div class="val red" id="s-month-cost">$0</div><div class="label">This month</div></div>
+      <div class="stat-card"><div class="val red" id="s-year-cost">$0</div><div class="label">This year</div></div>
     </div>
 
     <div class="toolbar">
@@ -821,20 +823,36 @@ async function loadPages() {
 }
 
 function updateStats(pages) {
-  const confirmed = pages.filter(p => p.status === 'confirmed');
-  const pending   = pages.filter(p => p.status !== 'confirmed');
-  const totalCost = pages.reduce((s, p) => s + (p.estimated_cost || 0), 0);
+    const confirmed = pages.filter(p => p.status === 'confirmed');
+    const pending   = pages.filter(p => p.status !== 'confirmed');
+    const totalCost = pages.reduce((s, p) => s + (p.estimated_cost || 0), 0);
 
-  document.getElementById('stats-row').style.display = pages.length ? 'grid' : 'none';
-  document.getElementById('s-total').textContent     = pages.length;
-  document.getElementById('s-confirmed').textContent = confirmed.length;
-  document.getElementById('s-pending').textContent   = pending.length;
-  document.getElementById('s-cost').textContent      = `$${totalCost.toFixed(0)}`;
+    // Monthly breakdown
+    const now = new Date();
+    const thisMonth = pages.filter(p => {
+      const d = new Date(p.created_at);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const thisMonthCost = thisMonth.reduce((s, p) => s + (p.estimated_cost || 0), 0);
+    const thisYear = pages.filter(p => new Date(p.created_at).getFullYear() === now.getFullYear());
+    const thisYearCost = thisYear.reduce((s, p) => s + (p.estimated_cost || 0), 0);
 
-  const name = currentUser?.user_metadata?.full_name?.split(' ')[0];
-  document.getElementById('page-title').innerHTML =
-    `${name ? name + "'s" : 'Your'} dates <span>${pages.length} page${pages.length !== 1 ? 's' : ''}</span>`;
-}
+    document.getElementById('stats-row').style.display = pages.length ? 'grid' : 'none';
+    document.getElementById('s-total').textContent     = pages.length;
+    document.getElementById('s-confirmed').textContent = confirmed.length;
+    document.getElementById('s-pending').textContent   = pending.length;
+    document.getElementById('s-cost').textContent      = `$${totalCost.toFixed(0)}`;
+
+    // Add monthly/yearly stats if they exist
+    const monthEl = document.getElementById('s-month-cost');
+    const yearEl  = document.getElementById('s-year-cost');
+    if (monthEl) monthEl.textContent = `$${thisMonthCost.toFixed(0)}`;
+    if (yearEl)  yearEl.textContent  = `$${thisYearCost.toFixed(0)}`;
+
+    const name = currentUser?.user_metadata?.full_name?.split(' ')[0];
+    document.getElementById('page-title').innerHTML =
+      `${name ? name + "'s" : 'Your'} dates <span>${pages.length} page${pages.length !== 1 ? 's' : ''}</span>`;
+  }
 
 function applyFilters() {
   const q      = (document.getElementById('search').value || '').toLowerCase();
@@ -859,85 +877,97 @@ function applyFilters() {
 
 // ── RENDER ─────────────────────────────────────────────────────
 function renderCards(pages) {
-  const grid = document.getElementById('cards-grid');
-  const now  = new Date();
+    const grid = document.getElementById('cards-grid');
+    const now = new Date();
 
-  if (!pages.length && !isAnon) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">💌</div>
-        <h3>No dates yet</h3>
-        <p>Create your first date page and send her the link</p>
-        <a href="/creator.html" class="btn-create">+ Create a date</a>
+    if (!pages.length && !isAnon) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">💌</div>
+          <h3>No dates yet</h3>
+          <p>Create your first date page and send her the link</p>
+          <a href="/creator" class="btn-create">+ Create a date</a>
+        </div>`;
+      return;
+    }
+
+    if (isAnon || !pages.length) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🔒</div>
+          <h3>Sign in to see your dates</h3>
+          <p>Your date pages are private — sign in with Google to access them</p>
+          <button class="btn-create" onclick="signInGoogle()">Sign in with Google</button>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = pages.map(p => {
+      const expired = p.expires_at && new Date(p.expires_at) < now;
+      const status  = expired ? 'expired' : (p.status || 'pending');
+
+      // Parse venue
+      let venueObj = null;
+      if (p.selected_venue) {
+        try {
+          venueObj = typeof p.selected_venue === 'string' ? JSON.parse(p.selected_venue) : p.selected_venue;
+        } catch(e) {}
+      }
+
+      // Parse slot
+      let slotObj = null;
+      if (p.selected_slot) {
+        try {
+          slotObj = typeof p.selected_slot === 'string' ? JSON.parse(p.selected_slot) : p.selected_slot;
+        } catch(e) {}
+      }
+
+      const created = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+      const createdTime = p.created_at ? new Date(p.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+      const cost = p.estimated_cost != null ? `$${Number(p.estimated_cost).toFixed(2)}` : null;
+
+      return `
+      <div class="date-card" id="card-${p.id}">
+        <div class="card-top">
+          <div class="card-name">${esc(p.guest_name || 'Date')}</div>
+          <span class="status-pill pill-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+        </div>
+
+        ${p.personal_note ? `<div class="card-note">${esc(truncate(p.personal_note, 80))}</div>` : ''}
+
+        ${venueObj && status === 'confirmed' ? `
+          <div class="confirmed-venue">
+            <span class="icon">✓</span>
+            <div>
+              <div style="font-size:12px;color:var(--green);font-weight:500;margin-bottom:2px">She picked</div>
+              <div style="font-size:14px;font-weight:500">${esc(venueObj.name || '')}</div>
+              ${venueObj.address ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${esc(venueObj.address)}</div>` : ''}
+              ${slotObj ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">📅 ${esc(slotObj.day || '')}, ${esc(slotObj.date || '')} at ${esc(slotObj.time || '')}</div>` : ''}
+              ${venueObj.rating ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">⭐ ${venueObj.rating}★ · ${venueObj.reviews || ''} reviews</div>` : ''}
+            </div>
+          </div>` : ''}
+
+        <div class="card-meta">
+          <span class="meta-chip">📅 ${created} ${createdTime}</span>
+          ${cost ? `<span class="meta-chip">💰 ${cost}</span>` : ''}
+          ${p.guest_email ? `<span class="meta-chip">✉️ ${esc(p.guest_email)}</span>` : ''}
+        </div>
+
+        ${p.notes ? `
+          <div class="card-notes-box">
+            <strong>Your notes</strong>
+            ${esc(truncate(p.notes, 100))}
+          </div>` : ''}
+
+        <div class="card-actions">
+          <button class="action-btn primary" onclick="copyLink('${esc(p.slug)}')">Copy link</button>
+          <a href="${SITE_URL}/${esc(p.slug)}" target="_blank" class="action-btn">Preview ↗</a>
+          <button class="action-btn" onclick="openEdit('${p.id}')">✎ Edit</button>
+          <button class="action-btn danger" style="margin-left:auto" onclick="openDelete('${p.id}')">Delete</button>
+        </div>
       </div>`;
-    return;
+    }).join('');
   }
-
-  if (isAnon || !pages.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">🔒</div>
-        <h3>Sign in to see your dates</h3>
-        <p>Your date pages are private — sign in with Google to access them</p>
-        <button class="btn-create" onclick="signInGoogle()">Sign in with Google</button>
-      </div>`;
-    return;
-  }
-
-  grid.innerHTML = pages.map(p => {
-    const expired = p.expires_at && new Date(p.expires_at) < now;
-    const status  = expired ? 'expired' : (p.status || 'pending');
-    const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
-
-    const venueCount = (() => {
-      try { return (Array.isArray(p.venues) ? p.venues : JSON.parse(p.venues || '[]')).length; }
-      catch { return 0; }
-    })();
-
-    const created  = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : '';
-    const cost     = p.estimated_cost != null ? `$${Number(p.estimated_cost).toFixed(2)}` : null;
-    const expiresStr = p.expires_at ? `Expires ${fmtRelative(p.expires_at)}` : null;
-
-    return `
-    <div class="date-card" id="card-${p.id}">
-      <div class="card-top">
-        <div class="card-name">${esc(p.guest_name || 'Date')}</div>
-        <span class="status-pill pill-${status}">${statusLabel}</span>
-      </div>
-
-      ${p.personal_note ? `<div class="card-note">${esc(truncate(p.personal_note, 80))}</div>` : ''}
-
-      ${p.status === 'confirmed' && p.selected_venue ? `
-        <div class="confirmed-venue">
-          <span class="icon">✓</span>
-          <div>
-            <div style="font-size:12px;color:var(--green);font-weight:500;margin-bottom:1px">She picked</div>
-            <div style="font-size:13px">${esc(p.selected_venue)}${p.selected_slot ? ` · ${esc(p.selected_slot)}` : ''}</div>
-          </div>
-        </div>` : ''}
-
-      <div class="card-meta">
-        <span class="meta-chip">📅 ${created}</span>
-        ${venueCount ? `<span class="meta-chip">📍 ${venueCount} venue${venueCount !== 1 ? 's' : ''}</span>` : ''}
-        ${cost        ? `<span class="meta-chip">💰 ${cost}</span>` : ''}
-        ${expiresStr  ? `<span class="meta-chip" style="color:${expired ? 'var(--accent)' : 'var(--muted)'}">⏰ ${expiresStr}</span>` : ''}
-      </div>
-
-      ${p.notes ? `
-        <div class="card-notes-box">
-          <strong>Your notes</strong>
-          ${esc(truncate(p.notes, 100))}
-        </div>` : ''}
-
-      <div class="card-actions">
-        <button class="action-btn primary" onclick="copyLink('${esc(p.slug)}')">Copy link</button>
-        <a href="${SITE_URL}/${esc(p.slug)}" target="_blank" class="action-btn">Preview ↗</a>
-        <button class="action-btn" onclick="openEdit('${p.id}')">✎ Edit</button>
-        <button class="action-btn danger" style="margin-left:auto" onclick="openDelete('${p.id}')">Delete</button>
-      </div>
-    </div>`;
-  }).join('');
-}
 
 // ── ACTIONS ────────────────────────────────────────────────────
 function copyLink(slug) {
