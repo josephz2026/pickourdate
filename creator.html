@@ -512,12 +512,14 @@
       </div>
     </div>
 
+    <button class="generate-btn" id="preview-btn" onclick="previewDate()" style="background:transparent;border-color:rgba(255,255,255,0.3);margin-bottom:10px">Preview first</button>
     <button class="generate-btn" id="generate-btn" onclick="generateLink()">Generate link</button>
-
+    
     <div class="link-box" id="link-box">
       <div class="link-label">Your date link is ready</div>
       <div class="link-url" id="link-url"></div>
       <button class="copy-btn" onclick="copyLink()">Copy link</button>
+      <button class="copy-btn" onclick="window.location.href='/'" style="margin-top:10px;border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.5)">+ Create another date</button>
     </div>
 
     <p class="page-footer">pickourdate.co</p>
@@ -937,6 +939,27 @@
       return `${name.toLowerCase().replace(/\s+/g, '')}-${Math.random().toString(36).substring(2, 7)}`;
     }
 
+    function previewDate() {
+      const guestName = document.getElementById('guest-name').value.trim() || 'Sara';
+      const senderName = document.getElementById('sender-name').value.trim();
+      const note = document.getElementById('personal-note').value.trim();
+      const senderLine = senderName ? `a date planned by ${senderName}` : 'you have a date proposal';
+      const noteHtml = note ? `<p style="font-size:16px;color:white;font-style:italic;margin-bottom:32px;line-height:1.8">"${note}"</p>` : '<div style="margin-bottom:32px"></div>';
+      const html = `
+        <div style="background:#E8E0D5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;font-family:'DM Sans',sans-serif;">
+          <div style="background:#12121C;border-radius:32px;padding:56px 40px;max-width:400px;width:100%;text-align:center;">
+            <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:40px">${senderLine}</p>
+            <h1 style="font-family:Georgia,serif;font-size:52px;font-weight:400;color:white;margin-bottom:16px;line-height:1.1">Hey, <em style="font-style:italic;color:rgba(255,255,255,0.45)">${guestName}.</em></h1>
+            ${noteHtml}
+            <button style="width:100%;padding:15px;border-radius:50px;border:1px solid rgba(255,255,255,0.3);background:transparent;color:white;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">See the options</button>
+            <p style="margin-top:36px;font-size:10px;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase">pickourdate.co</p>
+          </div>
+        </div>`;
+      const win = window.open('', '_blank');
+      win.document.write(html);
+      win.document.close();
+    }
+    
     async function generateLink() {
       const guestName = document.getElementById('guest-name').value.trim();
       if (!guestName) { alert('Please enter receiver name.'); return; }
