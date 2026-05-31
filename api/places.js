@@ -7,19 +7,15 @@ export default async function handler(req, res) {
   try {
     let placeName = input;
     if (input.startsWith('http')) {
-      // Follow redirects for short links like maps.app.goo.gl
       if (input.includes('goo.gl') || input.includes('maps.app')) {
         try {
           const redirectRes = await fetch(input, { redirect: 'follow' });
           input = redirectRes.url;
-          console.log('Resolved URL:', input);
-          // Try to extract place name from various URL formats
           const nameMatch = input.match(/place\/([^/@?]+)/) || 
                            input.match(/search\/([^/@?]+)/) ||
                            input.match(/q=([^&]+)/);
           if (nameMatch) placeName = decodeURIComponent(nameMatch[1].replace(/\+/g, ' '));
-          console.log('Extracted name:', placeName);
-        } catch(e) { console.log('Redirect error:', e.message); }
+        } catch(e) {}
       }
       const match = input.match(/place\/([^/@]+)/);
       if (match) placeName = decodeURIComponent(match[1].replace(/\+/g, ' '));
