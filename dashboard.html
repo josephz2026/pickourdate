@@ -922,8 +922,9 @@ function renderCards(pages) {
         } catch(e) {}
       }
 
-      const created = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-      const createdTime = p.created_at ? new Date(p.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+      const createdDate = p.created_at ? new Date(p.created_at) : null;
+      const created = createdDate ? createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+      const createdTime = createdDate ? createdDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
       const cost = p.estimated_cost != null ? `$${Number(p.estimated_cost).toFixed(2)}` : null;
 
       return `
@@ -939,9 +940,9 @@ function renderCards(pages) {
           <div class="confirmed-venue">
             <span class="icon">✓</span>
             <div>
-              <div style="font-size:12px;color:var(--green);font-weight:500;margin-bottom:2px">She picked</div>
+              <div style="font-size:12px;color:var(--green);font-weight:500;margin-bottom:2px">They picked</div>
               <div style="font-size:14px;font-weight:500">${esc(venueObj.name || '')}</div>
-              ${venueObj.address ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${esc(venueObj.address)}</div>` : ''}
+              ${venueObj.address ? `<a href="https://www.google.com/maps/search/${encodeURIComponent((venueObj.name || '') + ' ' + (venueObj.address || ''))}" target="_blank" style="font-size:12px;color:var(--muted);margin-top:2px;display:block;text-decoration:underline">📍 ${esc(venueObj.address)}</a>` : ''}
               ${slotObj ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">📅 ${esc(slotObj.day || '')}, ${esc(slotObj.date || '')} at ${esc(slotObj.time || '')}</div>` : ''}
               ${venueObj.rating ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">⭐ ${venueObj.rating}★ · ${venueObj.reviews || ''} reviews</div>` : ''}
             </div>
