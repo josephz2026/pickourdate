@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { to, guestName, venueName, date, time, type, address } = req.body;
+  const { to, guestName, venueName, date, time, type, address, rating, reviews } = req.body;
   if (!to) return res.status(400).json({ error: 'Missing email' });
 
   const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent((venueName || '') + ' ' + (address || ''))}`;
@@ -113,6 +113,7 @@ export default async function handler(req, res) {
           <a href="${mapsLink}" style="color:white;text-decoration:underline">${venueName}</a>
         </p>
         ${address ? `<p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.5);font-family:'Helvetica',sans-serif">${address}</p>` : ''}
+        ${rating ? `<p style="margin:4px 0 0;font-size:12px;color:rgba(255,255,255,0.4);font-family:'Helvetica',sans-serif">${rating}★ · ${reviews || ''} reviews</p>` : ''}
       </td></tr>
       <tr><td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);">
         <p style="margin:0 0 4px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-family:'Helvetica',sans-serif">Date</p>
