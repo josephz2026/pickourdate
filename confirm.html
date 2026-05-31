@@ -302,6 +302,21 @@
     const slot = JSON.parse(localStorage.getItem('slot') || '{}');
     const slug = localStorage.getItem('slug');
 
+    // Check if this is a preview
+    async function checkPreview() {
+      if (!slug) return;
+      try {
+        const page = await getDatePage(slug);
+        if (page && page.is_preview) {
+          document.getElementById('confirm-btn').textContent = '👀 This is a preview';
+          document.getElementById('confirm-btn').style.opacity = '0.5';
+          document.getElementById('confirm-btn').onclick = () => alert('This is a preview — go back to the creator to generate a real link.');
+          document.getElementById('guest-email').closest('.email-section').style.display = 'none';
+        }
+      } catch(e) {}
+    }
+    checkPreview();
+
     if (venue.name) {
       document.getElementById('summary-venue').innerHTML =
         `${venue.name} <span class="summary-tag">${venue.tag}</span>`;
