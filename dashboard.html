@@ -923,8 +923,9 @@ function renderCards(pages) {
       }
 
       const createdDate = p.created_at ? new Date(p.created_at) : null;
-      const created = createdDate ? createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-      const createdTime = createdDate ? createdDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const created = createdDate ? createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: tz }) : '';
+      const createdTime = createdDate ? createdDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz }) : '';
       const cost = p.estimated_cost != null ? `$${Number(p.estimated_cost).toFixed(2)}` : null;
 
       return `
