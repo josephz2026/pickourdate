@@ -338,13 +338,15 @@
                 to: page.notify_email,
                 guestName: page.guest_name,
                 venueName: venue.name,
+                address: venue.address || '',
+                rating: venue.rating || null,
+                reviews: venue.reviews || null,
                 date: slot.date,
                 time: slot.time,
                 type: 'confirmed'
               })
             });
           }
-
           if (guestEmail) {
             fetch('/api/notify', {
               method: 'POST',
@@ -353,6 +355,9 @@
                 to: guestEmail,
                 guestName: page ? page.guest_name : 'you',
                 venueName: venue.name,
+                address: venue.address || '',
+                rating: venue.rating || null,
+                reviews: venue.reviews || null,
                 date: slot.date,
                 time: slot.time,
                 type: 'guest_confirmed'
