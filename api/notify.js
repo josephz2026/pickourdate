@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       const d = new Date(`${dateStr} ${year} ${timeStr}`);
       if (isNaN(d)) return new Date().toISOString();
       return d.toISOString();
-    } catch { return new Date().toISOString(); }
+    } catch(e) { return new Date().toISOString(); }
   }
 
   function toICSDate(dateStr, timeStr) {
@@ -25,8 +25,10 @@ export default async function handler(req, res) {
       const year = now.getFullYear();
       const d = new Date(`${dateStr} ${year} ${timeStr}`);
       if (isNaN(d)) return null;
-      return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    } catch { return null; }
+      // Use local time format instead of UTC to avoid timezone shift
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+    } catch(e) { return null; }
   }
 
   const isoDate = toISODate(date, time);
@@ -34,7 +36,8 @@ export default async function handler(req, res) {
   const icsEnd = icsStart ? (() => {
     const d = new Date(`${date} ${new Date().getFullYear()} ${time}`);
     d.setHours(d.getHours() + 2);
-    return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
   })() : null;
 
   const icsContent = icsStart ? [
