@@ -13,6 +13,12 @@ export default async function handler(req, res) {
           const redirectRes = await fetch(input, { redirect: 'follow' });
           input = redirectRes.url;
           console.log('Resolved URL:', input);
+          // Try to extract place name from various URL formats
+          const nameMatch = input.match(/place\/([^/@?]+)/) || 
+                           input.match(/search\/([^/@?]+)/) ||
+                           input.match(/q=([^&]+)/);
+          if (nameMatch) placeName = decodeURIComponent(nameMatch[1].replace(/\+/g, ' '));
+          console.log('Extracted name:', placeName);
         } catch(e) { console.log('Redirect error:', e.message); }
       }
       const match = input.match(/place\/([^/@]+)/);
