@@ -7,8 +7,7 @@ export default async function handler(req, res) {
   if (!to) return res.status(400).json({ error: 'Missing email' });
 
   const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent((venueName || '') + ' ' + (address || ''))}`;
-  const calLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Date at ${venueName}`)}&details=${encodeURIComponent(`${venueName} — ${date} at ${time}`)}&location=${encodeURIComponent((venueName || '') + ' ' + (address || ''))}&dates=${icsStart || ''}/${icsEnd || ''}`;
-
+  
   function toISODate(dateStr, timeStr) {
     try {
       const now = new Date();
@@ -40,6 +39,8 @@ export default async function handler(req, res) {
     return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
   })() : null;
 
+  const calLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Date at ${venueName}`)}&details=${encodeURIComponent(`${venueName} — ${date} at ${time}`)}&location=${encodeURIComponent((venueName || '') + ' ' + (address || ''))}&dates=${icsStart || ''}/${icsEnd || ''}`;
+  
   const icsContent = icsStart ? [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
