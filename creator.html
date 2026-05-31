@@ -796,7 +796,7 @@
       const v = venues[index];
       document.getElementById(`venue-block-${index}`).classList.add('filled');
       document.getElementById(`venue-name-${index}`).textContent = v.name;
-      document.getElementById(`venue-meta-${index}`).textContent = `${v.address} · ${v.rating}★`;
+      document.getElementById(`venue-meta-${index}`).textContent = `${v.address}${v.rating ? ' · ' + v.rating + '★' : ''}${v.reviews ? ' · ' + v.reviews + ' reviews' : ''}`;
       const tagsEl = document.getElementById(`venue-tags-${index}`);
       tagsEl.innerHTML = CATEGORIES.map(cat =>
         `<button class="tag-pill ${cat === v.tag ? 'active' : ''}" onclick="setTag(${index},'${cat}',this)">${cat}</button>`
