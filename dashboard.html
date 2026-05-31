@@ -752,9 +752,13 @@ async function handleSignOut() {
 
 async function checkAuth() {
   const { data: { session } } = await sb.auth.getSession();
-
   if (session?.user) {
     currentUser = session.user;
+    // Link any past anonymous dates to this account
+    await sb.from('date_pages')
+      .update({ creator_id: session.user.id })
+      .eq('creator_email', session.user.email)
+      .is('creator_id', null);
     showApp();
     renderUserChip();
     loadPages();
