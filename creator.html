@@ -507,7 +507,7 @@
       <div id="email-row" style="margin-top:14px">
         <div class="field">
           <label>Your email</label>
-          <input type="email" id="notify-email" placeholder="you@gmail.com" />
+          <input type="email" id="notify-email" placeholder="you@gmail.com" oninput="syncCreatorEmail()" />
         </div>
       </div>
     </div>
@@ -559,6 +559,17 @@
       const notifyConfirmed = document.getElementById('notify-confirmed-toggle');
       const eitherOn = notifyViewed.classList.contains('on') || notifyConfirmed.classList.contains('on');
       document.getElementById('email-row').style.display = eitherOn ? 'block' : 'none';
+    }
+
+    function syncCreatorEmail() {
+      const email = document.getElementById('notify-email').value.trim();
+      if (email && currentUserId) {
+        // If logged in, update their profile email in supabase
+        _supabase.from('profiles').upsert({ 
+          id: currentUserId, 
+          email: email 
+        }).then(() => {});
+      }
     }
 
     function addVenue() {
@@ -946,6 +957,7 @@ try {
           date_mode: 'slots',
           allow_escape: allowEscape,
           notify_email: notifyEmail || null,
+          creator_email: notifyEmail || null,
           notify_on_view: notifyOnView,
           notify_on_confirm: notifyOnConfirm,
           status: 'pending',
