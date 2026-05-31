@@ -185,14 +185,16 @@
 
         localStorage.setItem('slug', slug);
 
-        updateDatePage(slug, { viewed_at: new Date().toISOString() });
-
-       if (page.notify_email && page.notify_on_view !== false) {
-          fetch('/api/notify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ to: page.notify_email, guestName: page.guest_name, type: 'viewed' })
-          });
+        // Only notify on first view, not repeat views
+        if (!page.viewed_at) {
+          updateDatePage(slug, { viewed_at: new Date().toISOString() });
+          if (page.notify_email && page.notify_on_view !== false) {
+            fetch('/api/notify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ to: page.notify_email, guestName: page.guest_name, type: 'viewed' })
+            });
+          }
         }
 
         if (page.status === 'confirmed') {
