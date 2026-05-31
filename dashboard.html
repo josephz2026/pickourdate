@@ -1236,6 +1236,7 @@ function showToast(msg) {
       guest_name: name,
       status: 'confirmed',
       is_manual: true,
+      venues: logVenueObj ? JSON.stringify([logVenueObj]) : JSON.stringify([]),
       selected_venue: logVenueObj ? JSON.stringify(logVenueObj) : null,
       selected_slot: slotObj ? JSON.stringify(slotObj) : null,
       estimated_cost: cost ? parseFloat(cost) : null,
