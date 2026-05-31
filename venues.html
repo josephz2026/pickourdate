@@ -277,14 +277,14 @@
             </div>
             <div class="venue-body">
               <div class="venue-top">
-                <a href="${venue.maps}" target="_blank" class="venue-name" onclick="event.stopPropagation()">${venue.name}</a>
+                <a href="https://maps.google.com/?q=${encodeURIComponent(venue.name + ' ' + venue.address)}" target="_blank" class="venue-name" onclick="event.stopPropagation()">${venue.name}</a>
               </div>
               <div class="venue-stars">
                 ${renderStars(venue.rating)}
                 <span style="margin-left:4px">${venue.rating} · ${venue.reviews} reviews</span>
               </div>
               <div class="venue-address">${venue.address}</div>
-              <a class="venue-link" href="${venue.maps}" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>
+              <a class="venue-link" href="https://maps.google.com/?q=${encodeURIComponent(venue.name + ' ' + venue.address)}" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>
               <button class="select-btn" id="btn${n}">Choose this spot</button>
             </div>
           </div>
