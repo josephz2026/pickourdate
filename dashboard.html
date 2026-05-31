@@ -922,7 +922,7 @@ function renderCards(pages) {
         } catch(e) {}
       }
 
-      const createdDate = p.created_at ? new Date(p.created_at) : null;
+      const createdDate = p.created_at ? new Date(p.created_at.endsWith('Z') ? p.created_at : p.created_at + 'Z') : null;
       const created = createdDate ? createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
       const createdTime = createdDate ? createdDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
       const cost = p.estimated_cost != null ? `$${Number(p.estimated_cost).toFixed(2)}` : null;
