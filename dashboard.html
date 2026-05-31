@@ -715,6 +715,51 @@
       <button class="btn-sm" onclick="closeDeleteModal()">Cancel</button>
       <button style="background:var(--accent);color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:13px;cursor:pointer;" onclick="confirmDelete()">Yes, delete</button>
     </div>
+ </div>
+</div>
+
+<!-- Log a date modal -->
+<div class="modal-overlay" id="log-modal">
+  <div class="modal" style="max-width:520px">
+    <h3>Log a date</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field" style="grid-column:1/-1">
+        <label>Their name</label>
+        <input type="text" id="log-name" placeholder="Sara" />
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Venue</label>
+        <input type="text" id="log-venue-input" placeholder="Search for a venue…" oninput="handleLogVenueInput()" autocomplete="off" />
+        <div id="log-venue-suggestions"></div>
+        <input type="hidden" id="log-venue-data" />
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="log-date" />
+      </div>
+      <div class="field">
+        <label>Time</label>
+        <input type="time" id="log-time" />
+      </div>
+      <div class="field">
+        <label>Cost ($)</label>
+        <input type="number" id="log-cost" placeholder="0.00" step="0.01" min="0" />
+      </div>
+      <div class="field">
+        <label>Your rating</label>
+        <div id="log-rating-stars" style="display:flex;gap:8px;margin-top:6px">
+          ${[1,2,3,4,5].map(i => `<span onclick="setLogRating(${i})" data-star="${i}" style="font-size:24px;cursor:pointer;opacity:0.3;transition:opacity 0.15s">★</span>`).join('')}
+        </div>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Notes</label>
+        <textarea id="log-notes" rows="2" placeholder="How did it go?"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeLogModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveLoggedDate()">Save date</button>
+    </div>
   </div>
 </div>
 
@@ -910,7 +955,8 @@ function renderCards(pages) {
           <div class="icon">💌</div>
           <h3>No dates yet</h3>
           <p>Create your first date page and send her the link</p>
-          <a href="/creator" class="btn-create">+ Create a date</a>
+          <a href="/creator" class="btn-create">+ New date</a>
+      <button class="btn-create" onclick="openLogModal()" style="background:var(--bg2);color:var(--text);border:1px solid var(--border2);">+ Log a date</button>
         </div>`;
       return;
     }
@@ -977,6 +1023,8 @@ function renderCards(pages) {
           ${cost ? `<span class="meta-chip">💰 ${cost}</span>` : ''}
           ${p.guest_email ? `<span class="meta-chip">✉️ ${esc(p.guest_email)}</span>` : ''}
         </div>
+
+        ${p.date_rating ? `<div style="font-size:16px;margin-bottom:4px">${'★'.repeat(p.date_rating)}${'☆'.repeat(5-p.date_rating)}</div>` : ''}
 
         ${p.notes ? `
           <div class="card-notes-box">
@@ -1077,14 +1125,136 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// Close modals on backdrop click
-['edit-modal','delete-modal'].forEach(id => {
-  document.getElementById(id).addEventListener('click', e => {
-    if (e.target === e.currentTarget) {
-      closeModal(); closeDeleteModal();
+  // Log a date modal
+  let logRating = 0;
+  let logVenueObj = null;
+  let logVenueTimer = null;
+
+  function openLogModal() {
+    logRating = 0;
+    logVenueObj = null;
+    document.getElementById('log-name').value = '';
+    document.getElementById('log-venue-input').value = '';
+    document.getElementById('log-venue-suggestions').innerHTML = '';
+    document.getElementById('log-date').value = '';
+    document.getElementById('log-time').value = '';
+    document.getElementById('log-cost').value = '';
+    document.getElementById('log-notes').value = '';
+    document.querySelectorAll('#log-rating-stars span').forEach(s => s.style.opacity = '0.3');
+    document.getElementById('log-modal').classList.add('open');
+  }
+
+  function closeLogModal() {
+    document.getElementById('log-modal').classList.remove('open');
+  }
+
+  function setLogRating(n) {
+    logRating = n;
+    document.querySelectorAll('#log-rating-stars span').forEach(s => {
+      s.style.opacity = parseInt(s.dataset.star) <= n ? '1' : '0.3';
+    });
+  }
+
+  function handleLogVenueInput() {
+    const input = document.getElementById('log-venue-input').value.trim();
+    const suggestionsEl = document.getElementById('log-venue-suggestions');
+    clearTimeout(logVenueTimer);
+    if (input.length < 2) { suggestionsEl.innerHTML = ''; return; }
+    suggestionsEl.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:6px 0">Searching…</div>';
+    logVenueTimer = setTimeout(async () => {
+      try {
+        const response = await fetch('/api/autocomplete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input })
+        });
+        const data = await response.json();
+        if (data.suggestions && data.suggestions.length > 0) {
+          suggestionsEl.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border2);border-radius:8px;margin-top:4px;overflow:hidden">
+            ${data.suggestions.map(s => `
+              <div onclick="selectLogVenue('${s.placeId}', '${s.name.replace(/'/g,"\\'")}', '${s.address.replace(/'/g,"\\'")}') " style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border)" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
+                <div style="font-size:13px">${s.name}</div>
+                <div style="font-size:11px;color:var(--muted)">${s.address}</div>
+              </div>`).join('')}
+          </div>`;
+        } else {
+          suggestionsEl.innerHTML = '';
+        }
+      } catch(e) { suggestionsEl.innerHTML = ''; }
+    }, 350);
+  }
+
+  async function selectLogVenue(placeId, name, address) {
+    document.getElementById('log-venue-input').value = name;
+    document.getElementById('log-venue-suggestions').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:6px 0">Loading details…</div>';
+    try {
+      const response = await fetch('/api/placedetails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ placeId })
+      });
+      const place = await response.json();
+      logVenueObj = { name: place.name || name, address: place.address || address, maps: place.maps, rating: place.rating, reviews: place.reviews };
+    } catch(e) {
+      logVenueObj = { name, address, maps: '', rating: null, reviews: null };
     }
+    document.getElementById('log-venue-suggestions').innerHTML = `<div style="font-size:12px;color:var(--green);padding:6px 0">✓ ${logVenueObj.name}</div>`;
+  }
+
+  async function saveLoggedDate() {
+    const name = document.getElementById('log-name').value.trim();
+    if (!name) { showToast('Please enter a name'); return; }
+    const dateVal = document.getElementById('log-date').value;
+    const timeVal = document.getElementById('log-time').value;
+    const cost = document.getElementById('log-cost').value;
+    const notes = document.getElementById('log-notes').value.trim();
+
+    const slug = 'manual-' + Math.random().toString(36).substring(2, 9);
+    const dateObj = dateVal ? new Date(dateVal) : new Date();
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+    let slotObj = null;
+    if (dateVal && timeVal) {
+      const [h, m] = timeVal.split(':');
+      const hour = parseInt(h);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+      slotObj = {
+        day: dayNames[dateObj.getDay()],
+        date: `${monthNames[dateObj.getMonth()]} ${dateObj.getDate()}`,
+        time: `${hour12}:${m} ${ampm}`
+      };
+    }
+
+    const { error } = await sb.from('date_pages').insert({
+      slug,
+      guest_name: name,
+      status: 'confirmed',
+      is_manual: true,
+      selected_venue: logVenueObj ? JSON.stringify(logVenueObj) : null,
+      selected_slot: slotObj ? JSON.stringify(slotObj) : null,
+      estimated_cost: cost ? parseFloat(cost) : null,
+      notes: notes || null,
+      date_rating: logRating || null,
+      creator_id: currentUser?.id || null,
+      creator_email: currentUser?.email || null
+    });
+
+    if (error) { showToast('Error: ' + error.message); return; }
+    showToast('Date logged!');
+    closeLogModal();
+    loadPages();
+  }
+
+// Close modals on backdrop click
+['edit-modal','delete-modal','log-modal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      if (e.target === e.currentTarget) {
+        closeModal(); closeDeleteModal(); closeLogModal();
+      }
+    });
   });
-});
 
 // ── INIT ───────────────────────────────────────────────────────
 checkAuth();
