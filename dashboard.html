@@ -607,6 +607,7 @@
     .user-chip { display: none !important; }
     .topbar-right { gap: 8px; }
     .btn-create { padding: 7px 12px; font-size: 12px; }
+  #signout-btn { display: none !important; }
   }
 </style>
 </head>
@@ -681,6 +682,10 @@
     <div class="cards-grid" id="cards-grid">
       <div style="grid-column:1/-1"><div class="spinner"></div></div>
     </div>
+  </div>
+
+<div id="mobile-signout" style="display:none;text-align:center;padding:20px 0 40px;font-size:12px;color:var(--muted);cursor:pointer;" onclick="handleSignOut()">
+    Sign out
   </div>
 </div>
 
@@ -868,6 +873,7 @@ function renderUserChip() {
 
   chip.style.display = 'flex';
   signout.style.display = 'inline-flex';
+  document.getElementById('mobile-signout').style.display = 'block';
 
   const meta = currentUser.user_metadata || {};
   nameEl.textContent = meta.full_name?.split(' ')[0] || currentUser.email?.split('@')[0] || 'You';
