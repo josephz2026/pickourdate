@@ -147,7 +147,7 @@
   .topbar {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 0 32px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -156,7 +156,6 @@
     top: 0;
     z-index: 10;
   }
-
   .topbar-logo {
     font-family: var(--serif);
     font-weight: 300;
@@ -600,11 +599,15 @@
   }
   #toast.show { opacity: 1; transform: translateY(0); }
 
-  @media (max-width: 600px) {
+@media (max-width: 600px) {
     .page-body { padding: 24px 16px; }
     .topbar { padding: 0 16px; }
     .cards-grid { grid-template-columns: 1fr; }
     .login-card { padding: 28px 24px; }
+    .user-chip { display: none !important; }
+    .btn-sm { display: none !important; }
+    .topbar-right { gap: 8px; }
+    .btn-create { padding: 7px 12px; font-size: 12px; }
   }
 </style>
 </head>
