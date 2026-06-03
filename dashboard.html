@@ -891,9 +891,10 @@ async function loadPages() {
   let query = sb.from('date_pages')
     .select('*')
     .is('deleted_at', null)
+    .eq('is_preview', false)
     .eq('creator_id', currentUser.id)
     .order('created_at', { ascending: false });
-
+  
   // RLS will enforce creator_id filter for logged-in users
   // For anon browsing, we show nothing (they didn't create any)
   if (isAnon) {
