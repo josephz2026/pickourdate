@@ -24,7 +24,7 @@ async function supabaseRequest(endpoint, options = {}) {
 }
 
 async function getDatePage(slug) {
-  const data = await supabaseRequest(`date_pages?slug=eq.${encodeURIComponent(slug)}&select=*`);
+  const data = await supabaseRequest(`date_pages?slug=eq.${encodeURIComponent(slug)}&select=*&deleted_at=is.null`);
   return data && data.length > 0 ? data[0] : null;
 }
 
