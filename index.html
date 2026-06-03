@@ -184,21 +184,28 @@
     var slot = {};
 
     async function init() {
-     // Update OG tags for invite links
+      var rawPath = window.location.pathname;
+      var slug = rawPath.replace(/^\//, '');
+
+      /// Update OG tags for invite links (non-blocking)
       if (slug) {
-        fetch('/api/og?slug=' + encodeURIComponent(slug))
-          .then(r => r.json())
-          .then(data => {
-            if (data.title) {
-              document.getElementById('og-title') && (document.getElementById('og-title').content = data.title);
-              document.getElementById('tw-title') && (document.getElementById('tw-title').content = data.title);
-            }
-            if (data.description) {
-              document.getElementById('og-desc') && (document.getElementById('og-desc').content = data.description);
-              document.getElementById('tw-desc') && (document.getElementById('tw-desc').content = data.description);
-            }
-          }).catch(() => {});
+        try {
+          fetch('/api/og?slug=' + encodeURIComponent(slug))
+            .then(r => r.json())
+            .then(data => {
+              if (data.title) {
+                document.getElementById('og-title') && (document.getElementById('og-title').content = data.title);
+                document.getElementById('tw-title') && (document.getElementById('tw-title').content = data.title);
+              }
+              if (data.description) {
+                document.getElementById('og-desc') && (document.getElementById('og-desc').content = data.description);
+                document.getElementById('tw-desc') && (document.getElementById('tw-desc').content = data.description);
+              }
+            }).catch(() => {});
+        } catch(e) {}
       }
+
+      
 
       if (!slug) {
         document.getElementById('landing').classList.remove('hidden');
