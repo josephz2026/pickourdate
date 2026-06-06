@@ -742,6 +742,19 @@ function applyFilters() {
   renderTable(rows);
 }
 
+  function getVenueName(v) {
+  if (!v) return '—';
+  if (typeof v === 'string') return v;
+  return v.name || v.address || JSON.stringify(v);
+}
+
+function getSlotLabel(s) {
+  if (!s) return '—';
+  if (typeof s === 'string') return s;
+  return s.label || s.date || s.time || JSON.stringify(s);
+}
+  
+
 // ── RENDER ────────────────────────────────────────────────────
 function renderTable(rows) {
   const tbody = document.getElementById('table-body');
@@ -777,7 +790,7 @@ function renderTable(rows) {
       <td>${esc(r.guest_name || '—')}</td>
       <td><a class="slug-link" href="${SITE_URL}/${esc(r.slug)}" target="_blank">/${esc(r.slug || '—')}</a></td>
       <td>${pill}</td>
-      <td class="mono" style="color:var(--muted)">${venueCount}</td>
+      <td style="font-size:12px;max-width:180px;white-space:normal">${r.selected_venue ? esc(getVenueName(r.selected_venue)) : '<span style="color:var(--muted)">—</span>'}</td>
       <td class="mono" style="color:var(--muted);font-size:11px">${created}</td>
       <td class="mono" style="color:${expired ? 'var(--accent)' : 'var(--muted)'};font-size:11px">${expires}</td>
       <td class="wrap" style="font-size:12px;color:var(--muted)">${notes}</td>
@@ -812,8 +825,8 @@ function renderTable(rows) {
             <div class="detail-kv">
               <div class="kv-row"><span class="kv-key">Her name</span><span class="kv-val">${esc(r.guest_name || '—')}</span></div>
               <div class="kv-row"><span class="kv-key">Guest email</span><span class="kv-val">${esc(r.guest_email || '—')}</span></div>
-              <div class="kv-row"><span class="kv-key">Confirmed venue</span><span class="kv-val">${esc(r.selected_venue || '—')}</span></div>
-              <div class="kv-row"><span class="kv-key">Confirmed time</span><span class="kv-val">${esc(r.selected_slot || '—')}</span></div>
+              <div class="kv-row"><span class="kv-key">Confirmed venue</span><span class="kv-val">${esc(getVenueName(r.selected_venue))}</span></div>
+              <div class="kv-row"><span class="kv-key">Confirmed time</span><span class="kv-val">${esc(getSlotLabel(r.selected_slot))}</span></div>
             </div>
           </div>
           <div class="detail-section">
