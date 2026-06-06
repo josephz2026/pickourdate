@@ -751,6 +751,7 @@ function applyFilters() {
 function getSlotLabel(s) {
   if (!s) return '—';
   if (typeof s === 'string') return s;
+  if (s.day && s.date && s.time) return `${s.day}, ${s.date} @ ${s.time}`;
   return s.label || s.date || s.time || JSON.stringify(s);
 }
   
