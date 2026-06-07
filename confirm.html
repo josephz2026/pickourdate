@@ -178,57 +178,51 @@
     .email-input::placeholder { color: rgba(255,255,255,0.2); }
 
     .confirm-btn {
-      width: 100%;
-      padding: 17px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.35);
-      background: transparent;
-      color: white;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-bottom: 12px;
-      position: relative;
-      z-index: 1;
-    }
+  width: 100%;
+  padding: 17px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.06) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(255,255,255,0.25), inset 0 0 30px rgba(255,255,255,0.04);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
 
-    .confirm-btn:hover {
-      border-color: rgba(255,255,255,0.7);
-      background: rgba(255,255,255,0.05);
-      transform: translateY(-2px);
-    }
+.confirm-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
 
-    .confirm-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-    }
+.confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; }
+    
+   .back-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.45);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  position: relative;
+  z-index: 1;
+}
 
-    .back-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: transparent;
-      color: rgba(255,255,255,0.45);
-      font-size: 13px;
-      font-weight: 400;
-      letter-spacing: 0.06em;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      z-index: 1;
-    }
-
-    .back-btn:hover {
-      border-color: rgba(255,255,255,0.25);
-      color: rgba(255,255,255,0.7);
-    }
+.back-btn:hover { transform: scale(1.02); filter: brightness(1.15); color: rgba(255,255,255,0.7); }
 
     .card-footer {
       margin-top: 32px;
