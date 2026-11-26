@@ -589,16 +589,19 @@
       }
     }
 
+    let nextVenueIndex = 0;
+    function activeVenueCount() { return venues.filter(v => v).length; }
+
     function addVenue() {
-      const index = venues.length;
-      if (index >= 4) return;
-      venues.push({ name: '', tag: 'Dinner', address: '', maps: '', rating: 4.5, reviews: '500+' });
+      if (activeVenueCount() >= 4) return;
+      const index = nextVenueIndex++;
+      venues[index] = ({ name: '', tag: 'Dinner', address: '', maps: '', rating: 4.5, reviews: '500+' });
       const container = document.getElementById('venues-container');
       const block = document.createElement('div');
       block.className = 'venue-block';
       block.id = `venue-block-${index}`;
       block.innerHTML = `
-        <div class="venue-number">Venue ${index + 1}</div>
+        <div class="venue-number">Venue ${activeVenueCount()}</div>
         <div class="venue-input-area">
           <input type="text" placeholder="Search for a venue or restaurant…" id="venue-input-${index}" oninput="handleVenueInput(${index})" autocomplete="off" />
           <div id="venue-suggestions-${index}" style="position:relative"></div>
@@ -613,7 +616,7 @@
         </div>
       `;
       container.appendChild(block);
-      if (venues.length >= 4) document.getElementById('add-venue-btn').style.display = 'none';
+      if (activeVenueCount() >= 4) document.getElementById('add-venue-btn').style.display = 'none';
     }
 
     let venueTimers = {};
